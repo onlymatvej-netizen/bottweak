@@ -267,6 +267,80 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
 .px-shine { background: linear-gradient(110deg, #ffb35c 30%, #fff6ea 50%, #ffb35c 70%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: px-shine 2.2s linear infinite; }
 @keyframes px-shine { to { background-position: -220% 0; } }
 
+/* ---------- хэллоуин: премиум-контролы ---------- */
+.cbtn {
+  --bgc: linear-gradient(135deg, #ffb03a, #ff7a1a);
+  --glow: rgba(255, 140, 43, .4);
+  position: relative; overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .30), rgba(255, 255, 255, 0) 48%),
+    var(--bgc);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, .4),
+    inset 0 -2px 0 rgba(0, 0, 0, .22),
+    0 4px 14px rgba(0, 0, 0, .4),
+    0 0 18px var(--glow);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .18);
+}
+.cbtn::after {
+  content: ""; position: absolute; inset: -40%;
+  background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, .28) 50%, transparent 58%);
+  transform: translateX(-130%);
+}
+.cbtn:hover::after { transform: translateX(130%); transition: transform .7s ease; }
+.cbtn.on  { --bgc: linear-gradient(135deg, #46e58e, #16a85a); --glow: rgba(61, 220, 132, .35); }
+.cbtn.off { --bgc: linear-gradient(135deg, #ff7d8d, #e03550); --glow: rgba(255, 90, 110, .42); }
+.cbtn.blue { --bgc: linear-gradient(135deg, #ffb03a, #ff7a1a); --glow: rgba(255, 140, 43, .45); }
+.cbtn.gold { --bgc: linear-gradient(135deg, #ffd76b, #f09a12); --glow: rgba(255, 199, 75, .5); }
+.cbtn.ghost { background: rgba(255, 255, 255, .05); color: var(--text); box-shadow: inset 0 0 0 1.5px rgba(255, 122, 26, .3), 0 4px 14px rgba(0, 0, 0, .4); }
+.cbtn:active { transform: scale(.96); filter: brightness(1.06); }
+.cbtn .state { box-shadow: 0 1px 3px rgba(0, 0, 0, .3); }
+
+.pill { border: 1px solid rgba(255, 122, 26, .16); }
+.pill.sel {
+  background: linear-gradient(135deg, #ffb03a, #ff7a1a); color: var(--ink); font-weight: 800;
+  border-color: transparent;
+  box-shadow: 0 0 14px rgba(255, 140, 43, .45), inset 0 1.5px 0 rgba(255, 255, 255, .35);
+}
+
+.send {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .3), rgba(255, 255, 255, 0) 50%), linear-gradient(135deg, #ffb03a, #ff6a1a);
+  box-shadow: 0 0 16px rgba(255, 122, 26, .5), inset 0 1.5px 0 rgba(255, 255, 255, .4), inset 0 -2px 0 rgba(0, 0, 0, .2);
+}
+
+.field:focus { border-color: #ff8c2b; box-shadow: 0 0 0 3px rgba(255, 140, 43, .18), 0 0 14px rgba(255, 140, 43, .2); }
+.stamp { border: 1px solid rgba(255, 122, 26, .22); box-shadow: 0 2px 10px rgba(0, 0, 0, .25); }
+
+.tabbar {
+  background: rgba(26, 12, 28, .88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 122, 26, .25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .55), 0 0 26px rgba(255, 122, 26, .14);
+}
+.tabbar button[aria-selected="true"] {
+  background: linear-gradient(135deg, #3d1c3d, #2a1030); color: #ffb066;
+  box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .4), 0 0 14px rgba(255, 122, 26, .22);
+}
+
+.bubble { border: 1px solid rgba(255, 122, 26, .14); box-shadow: 0 4px 14px rgba(0, 0, 0, .28); }
+.bubble.out { border-color: transparent; box-shadow: 0 4px 18px rgba(255, 122, 26, .28), inset 0 1px 0 rgba(255, 255, 255, .25); }
+
+.row .ico { background: linear-gradient(135deg, #361a3a, #22102a); box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .22), 0 2px 8px rgba(0, 0, 0, .3); }
+.row:active .ico { filter: brightness(1.15); }
+
+.toast { background: #241127; color: var(--text); border: 1px solid rgba(255, 122, 26, .4); box-shadow: 0 8px 26px rgba(0, 0, 0, .55), 0 0 18px rgba(255, 122, 26, .22); }
+.sheet { border: 1px solid rgba(255, 122, 26, .25); border-bottom: 0; box-shadow: 0 -8px 40px rgba(0, 0, 0, .5); }
+.demo-note { border: 1px dashed rgba(255, 122, 26, .35); }
+.hint code, .sub code { border: 1px solid rgba(255, 122, 26, .18); }
+
+/* читаемость префиксов: тёмная подложка и контрастная тень */
+.px-rainbow, .px-shine { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .8)) drop-shadow(0 0 8px rgba(0, 0, 0, .45)); }
+.badge.px-rainbow, .badge.px-red, .badge.px-shine { background: #1d0e1f !important; box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .4), 0 0 16px rgba(255, 122, 26, .22); }
+
+/* логи */
+.lg-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; margin-top: 8px; }
+.lg-msg { overflow-wrap: break-word; }
+.lg-meta { color: var(--muted); font-size: 11.5px; font-family: var(--mono); }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -293,6 +367,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
       <div id="cmd-list"></div>
     </section>
     <section class="tab" id="tab-profile"></section>
+    <section class="tab" id="tab-logs"></section>
     <section class="tab" id="tab-admin"></section>
   </main>
 </div>
@@ -340,6 +415,12 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
     v: 1, t: nowSec, id: 100200300, n: 'Матвей', u: 'matvej', r: 'owner', pu: null, j: nowSec - 86400 * 41, c: 1,
     sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold', px: 'shine' },
     a: { u: 128, p: 23, b: 4, m: 3, c: 41, k: 6 },
+    lg: [
+      [nowSec - 60, 'ok', 'Панель открыта: @matvej (владелец)'],
+      [nowSec - 300, 'info', 'Настройки сохранены: sd=1, ck=1'],
+      [nowSec - 900, 'warn', 'Промокод HW26 почти исчерпан: 9 из 10 активаций'],
+      [nowSec - 1500, 'error', 'media: TimeoutError — фото не переслано, попытка 3 из 3'],
+    ],
   };
   const decoded = decodeState();
   const S = decoded || DEMO;
@@ -381,6 +462,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
     sliders: svg('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>'),
     terminal: svg('<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m8 10 3 2-3 2M13 15h3.5"/>'),
     user: svg('<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>'),
+    logs: svg('<path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="M9.5 12h5M9.5 16h5"/>'),
     shield: svg('<path d="M12 3 5 6v5.5c0 4.3 2.8 7.6 7 9.5 4.2-1.9 7-5.2 7-9.5V6z"/><path d="m9 12 2.2 2.2L15 10"/>'),
     lock: svg('<rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
     send: svg('<path d="M21 3 10.5 13.5M21 3l-6.5 18-4-7.5L3 9.5z"/>'),
@@ -543,7 +625,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
 
       <h2>Префикс статуса</h2>
       <p class="sub">Твой статус — владелец, администратор или подписка — подсвечивается этим стилем.</p>
-      <div class="bubble out" style="max-width:100%;align-self:auto;border-radius:16px;text-align:center"><span class="px px-${D.px}">${ROLE[S.r]}</span></div>
+      <div class="bubble" style="max-width:100%;align-self:auto;border-radius:16px;text-align:center"><span class="px px-${D.px}">${ROLE[S.r]}</span></div>
       <div class="chips">${PX.map(([k, t]) => `<button class="pill ${D.px === k ? 'sel' : ''}" data-act="px" data-v="${k}">${t}</button>`).join('')}</div>
 
       <h2>Форматирование сообщений</h2><p class="sub">Бот сам оформит каждое твоё сообщение.</p>
@@ -602,6 +684,25 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
     return `<textarea class="field" data-af="text" maxlength="1800" placeholder="Текст рассылки">${esc(AF.text)}</textarea><div class="counter"><span id="txt-count">${AF.text.length}</span> / 1800</div>${btn('Отправить всем')}`;
   }
 
+  function logsHTML() {
+    const LG = Array.isArray(S.lg) ? S.lg : [];
+    const cnt = { error: 0, warn: 0 };
+    LG.forEach((e) => { if (cnt[e[1]] !== undefined) cnt[e[1]]++; });
+    const LVL = { ok: ['✅', '#4ade80'], info: ['ℹ️', '#ff8c2b'], warn: ['⚠️', '#ffc24b'], error: ['⛔', '#ff4d6d'] };
+    const rows = LG.map(([t, l, m]) => {
+      const v = LVL[l] || LVL.info;
+      return `<li class="row" style="align-items:flex-start"><span class="lg-dot" style="background:${v[1]};box-shadow:0 0 10px ${v[1]}${l === 'error' ? ';animation:px-glow 1.6s ease-in-out infinite' : ''}"></span>
+        <span class="grow"><span class="lg-msg">${esc(m)}</span><br><span class="lg-meta">${v[0]} ${String(l).toUpperCase()} · ${fmtTime(t)} · ${fmtDate(t)}</span></span></li>`;
+    }).join('');
+    const stat = (v, l, g) => `<div class="stat"><b style="background:${g};-webkit-background-clip:text;background-clip:text;color:transparent">${v}</b><span>${l}</span></div>`;
+    return `<h2>Логи бота</h2>
+      <p class="sub">Последние действия, ошибки и предупреждения. Бот передаёт их вместе с данными панели (поле <code>lg</code>).</p>
+      <div class="stats">${stat(LG.length, 'Записей', 'linear-gradient(90deg,#ffb066,#ff7a1a)')}${stat(cnt.error, 'Ошибок', 'linear-gradient(90deg,#ff7d8d,#ff4d6d)')}${stat(cnt.warn, 'Предупреждений', 'linear-gradient(90deg,#ffd76b,#f5a623)')}</div>
+      ${rows ? `<ul class="rows" style="margin-top:14px">${rows}</ul>` : '<p class="sub" style="margin-top:14px">Пока пусто — бот ещё не прислал логи.</p>'}
+      <button class="cbtn blue wide" style="margin-top:16px" data-act="logs-refresh"><span class="lbl" style="flex:none">🕯️ Запросить свежие логи</span></button>
+      <p class="hint">Окно закроется. Бот пришлёт в чат новую ссылку на панель со свежими логами.</p>`;
+  }
+
   function adminHTML() {
     const a = S.a || {};
     const stat = (v, l) => `<div class="stat"><b>${Number(v || 0).toLocaleString('ru-RU')}</b><span>${l}</span></div>`;
@@ -645,12 +746,13 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
   function renderCommands() { $('#cmd-list').innerHTML = commandsHTML($('#cmd-search').value); }
   function renderProfile() { $('#tab-profile').innerHTML = profileHTML(); paintAvatars(); }
   function renderAdmin() { $('#tab-admin').innerHTML = adminHTML(); }
+  function renderLogs() { $('#tab-logs').innerHTML = logsHTML(); }
   function renderToggles() { renderHome(); renderSettings(); paintSavebar(); }
 
   /* ---------- вкладки ---------- */
   const TABS = [
     ['home', 'Главная', ICON.home], ['settings', 'Настройки', ICON.sliders], ['cmds', 'Команды', ICON.terminal],
-    ['profile', 'Профиль', ICON.user], ...(isAdmin ? [['admin', 'Админ', ICON.shield]] : []),
+    ['profile', 'Профиль', ICON.user], ...(isOwner ? [['logs', 'Логи', ICON.logs]] : []), ...(isAdmin ? [['admin', 'Админ', ICON.shield]] : []),
   ];
   let currentTab = 'home';
   function show(tab) {
@@ -686,6 +788,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
         send({ a: 'set', s: changed() }, 'Отправляю боту…');
         break;
       }
+      case 'logs-refresh': send({ a: 'logs' }); break;
       case 'op-open': openOp = openOp === t.dataset.op ? null : t.dataset.op; renderAdmin(); break;
       case 'days': AF[t.dataset.key] = Number(t.dataset.v); hap('select'); renderAdmin(); break;
       case 'uses': AF.uses = Math.max(1, Math.min(100000, AF.uses + Number(t.dataset.d) * (AF.uses >= 10 ? 5 : 1))); renderAdmin(); break;
@@ -754,8 +857,9 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
     $('#undo-icon').innerHTML = ICON.undo;
     $('#tabbar').innerHTML = TABS.map(([id, label, icon]) => `<button role="tab" data-tab="${id}" aria-selected="false">${icon}<span>${label}</span></button>`).join('');
     if (!isAdmin) $('#tab-admin').remove();
+    if (!isOwner) $('#tab-logs').remove();
     $('#demo-note').hidden = !demo;
-    renderHome(); renderSettings(); renderCommands(); renderProfile(); if (isAdmin) renderAdmin();
+    renderHome(); renderSettings(); renderCommands(); renderProfile(); if (isOwner) renderLogs(); if (isAdmin) renderAdmin();
     paintAvatars(); paintSavebar();
     const saved = store.get('tab');
     show(TABS.some((t) => t[0] === saved) ? saved : 'home');
