@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#0e1322">
-<title>Панель юзербота</title>
+<meta name="theme-color" content="#150a10">
+<title>🎃 Панель юзербота</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,40 +12,35 @@
 <style>
 /* Панель юзербота — стили. Фирменный приём: яркие «сигнальные» кнопки с тёмным текстом, как цветные кнопки бота. */
 :root {
-  --ink: #0b1020;
-  --bg: #0e1322;
-  --surface: #171e35;
-  --surface-2: #212a48;
-  --line: rgba(255, 255, 255, .08);
-  --text: #edf0ff;
-  --muted: #8a94b8;
-  --go: #34d27b;
-  --stop: #ff5a6b;
-  --link: #5b93ff;
+  --ink: #1c0d00;
+  --bg: #150a10;
+  --surface: #221126;
+  --surface-2: #331736;
+  --line: rgba(255, 122, 26, .18);
+  --text: #ffe9d2;
+  --muted: #c08f9e;
+  --go: #4ade80;
+  --stop: #ff4d6d;
+  --link: #ff8c2b;
   --gold: #ffc24b;
-  --out: #5b93ff;
+  --out: #ff8c2b;
   --font: "Onest", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --tabbar-h: 64px;
   color-scheme: dark;
 }
-:root[data-theme="light"] {
-  --bg: #eef1fa;
-  --surface: #ffffff;
-  --surface-2: #e3e8f6;
-  --line: rgba(14, 21, 48, .1);
-  --text: #0e1530;
-  --muted: #5d678c;
-  --go: #2fcf78;
-  --stop: #ff5063;
-  --link: #3d7bff;
-  --gold: #f5b02e;
-  --out: #3d7bff;
-  color-scheme: light;
-}
+/* Хэллоуинская тёмно-оранжевая тема — единственная, светлой нет. */
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; background: var(--bg); color: var(--text); }
+body {
+  background:
+    radial-gradient(900px 500px at 85% -10%, rgba(255, 122, 26, .17), transparent 60%),
+    radial-gradient(700px 460px at -12% 28%, rgba(139, 92, 246, .15), transparent 60%),
+    radial-gradient(640px 640px at 50% 118%, rgba(255, 77, 109, .11), transparent 62%),
+    var(--bg);
+  background-attachment: fixed;
+}
 body {
   font: 400 15px/1.45 var(--font);
   -webkit-font-smoothing: antialiased;
@@ -58,13 +53,13 @@ button { cursor: pointer; border: 0; background: none; padding: 0; }
 :focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-radius: 8px; }
 [hidden] { display: none !important; }
 
-.wrap { max-width: 520px; margin: 0 auto; padding: 0 16px; }
+.wrap { max-width: 520px; margin: 0 auto; padding: 0 16px; position: relative; z-index: 1; }
 
 /* ---------- шапка ---------- */
 .top { display: flex; align-items: center; justify-content: space-between; padding: 14px 0 10px; }
 .brand { display: flex; align-items: baseline; font-weight: 800; font-size: 22px; letter-spacing: -.02em; }
 .brand .dot {
-  width: 11px; height: 11px; border-radius: 50%; background: var(--stop);
+  width: 11px; height: 11px; border-radius: 50%; background: #ff7a1a;
   display: inline-block; margin-right: 3px; transform: translateY(1px);
 }
 .brand .dot.live { background: var(--go); animation: pulse 2.4s ease-out infinite; }
@@ -247,6 +242,31 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
 .sheet .cbtn + .cbtn { margin-top: 8px; }
 @keyframes rise { from { transform: translateY(40px); opacity: 0; } }
 
+/* ---------- хэллоуин: декорации и префиксы ---------- */
+.bg-deco { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.bg-deco span { position: absolute; opacity: .30; animation: floaty 7s ease-in-out infinite; }
+.d1 { left: 3%; top: 10%; font-size: 46px; }
+.d2 { right: 5%; top: 6%; font-size: 34px; animation-delay: -2s; }
+.d3 { left: 7%; bottom: 16%; font-size: 30px; animation-delay: -4s; }
+.d4 { right: 9%; bottom: 24%; font-size: 36px; animation-delay: -1.2s; }
+.d5 { left: 46%; top: 2.5%; font-size: 28px; animation-delay: -3s; }
+.d6 { right: 32%; bottom: 4%; font-size: 42px; animation-delay: -5s; }
+.d7 { left: 30%; bottom: 7%; font-size: 34px; animation-delay: -6s; }
+@keyframes floaty { 0%, 100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-14px) rotate(6deg); } }
+.brand { background: linear-gradient(90deg, #ff8c2b, #ff5f6d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tabbar button[aria-selected="true"] { box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .35); }
+.stat b { background: linear-gradient(90deg, #ffb066, #ff7a1a); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ---------- стили префикса статуса ---------- */
+.px { font-weight: 800; letter-spacing: .02em; }
+.px-rainbow { background: linear-gradient(90deg, #ff5f6d, #ffc24b, #4ade80, #4fc6ff, #b58bff, #ff5f6d); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: px-rainbow 3s linear infinite; }
+@keyframes px-rainbow { to { background-position: 300% 0; } }
+.px-red { color: #ff3b3b; text-shadow: 0 0 10px rgba(255, 59, 59, .7), 0 0 26px rgba(255, 59, 59, .35); animation: px-glow 1.6s ease-in-out infinite; }
+@keyframes px-glow { 50% { text-shadow: 0 0 18px rgba(255, 59, 59, .95), 0 0 38px rgba(255, 59, 59, .5); } }
+.px-dark { background: linear-gradient(135deg, #241031, #0c0513); color: #ff9448 !important; padding: 2px 10px; border-radius: 9px; box-shadow: inset 0 0 0 1px rgba(255, 148, 72, .45), 0 0 16px rgba(255, 122, 26, .25); text-shadow: 0 0 10px rgba(255, 122, 26, .55); }
+.px-shine { background: linear-gradient(110deg, #ffb35c 30%, #fff6ea 50%, #ffb35c 70%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: px-shine 2.2s linear infinite; }
+@keyframes px-shine { to { background-position: -220% 0; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -254,9 +274,10 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
 </style>
 </head>
 <body>
+<div class="bg-deco" aria-hidden="true"><span class="d1">🎃</span><span class="d2">🦇</span><span class="d3">🍬</span><span class="d4">🕷️</span><span class="d5">👻</span><span class="d6">🕸️</span><span class="d7">🎃</span></div>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><span class="dot" id="brand-dot"></span>userbot</div>
+    <div class="brand">🎃<span class="dot" id="brand-dot"></span>userbot</div>
     <div class="top-right">
       <button class="stamp" data-act="refresh" aria-label="Обновить данные"><span class="stamp-ic" id="stamp-icon"></span><span id="stamp-time"></span></button>
       <div class="avatar" id="avatar-top"></div>
@@ -317,14 +338,15 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
   const nowSec = Math.floor(Date.now() / 1000);
   const DEMO = {
     v: 1, t: nowSec, id: 100200300, n: 'Матвей', u: 'matvej', r: 'owner', pu: null, j: nowSec - 86400 * 41, c: 1,
-    sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold' },
+    sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold', px: 'shine' },
     a: { u: 128, p: 23, b: 4, m: 3, c: 41, k: 6 },
   };
   const decoded = decodeState();
   const S = decoded || DEMO;
   const demo = !decoded;
-  const D = { ...S.s };                       // черновик настроек
-  const KEYS = ['sd', 'se', 'sm', 'ck', 'cf', 'tz', 'fm'];
+  const D = { ...S.s };
+  D.px = D.px || 'shine';                       // черновик настроек
+  const KEYS = ['sd', 'se', 'sm', 'ck', 'cf', 'tz', 'fm', 'px'];
 
   const isAdmin = S.r === 'owner' || S.r === 'admin';
   const isOwner = S.r === 'owner';
@@ -377,7 +399,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
       .replace('{date}', `${pad(d.getUTCDate())}.${pad(d.getUTCMonth() + 1)}`);
   };
   const tzLabel = (v) => `UTC${v >= 0 ? '+' : '−'}${Math.abs(v)}`;
-  const changed = () => { const o = {}; KEYS.forEach((k) => { if (D[k] !== S.s[k]) o[k] = D[k]; }); return o; };
+  const changed = () => { const o = {}; KEYS.forEach((k) => { const base = k === 'px' ? (S.s.px || 'shine') : S.s[k]; if (D[k] !== base) o[k] = D[k]; }); return o; };
   const formatOk = () => String(D.cf).includes('{time}') && String(D.cf).length <= 60;
 
   let toastTimer;
@@ -449,6 +471,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
   const FMT = [['off', 'Выкл'], ['auto', 'Авто'], ['bold', 'Жирный'], ['italic', 'Курсив'], ['underline', 'Подчёркнутый'],
     ['strike', 'Зачёркнутый'], ['spoiler', 'Спойлер'], ['mono', 'Моно'], ['quote', 'Цитата']];
   const NICK_PRESETS = ['{name} | {time}', '{name} • {time}', '{time} {name}', '{name} {time}'];
+  const PX = [['rainbow', 'Радужный'], ['red', 'Красный'], ['dark', 'Тёмный'], ['shine', 'Переливающийся']];
   const OPS = [
     { id: 'ban', ico: '🚫', t: 'Забанить', kind: 'ref', color: 'off', ask: 'Забанить пользователя?' },
     { id: 'unban', ico: '✅', t: 'Разбанить', kind: 'ref', color: 'on' },
@@ -467,9 +490,11 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
       <span class="r1"><span class="ico">${name.ico}</span><span class="state">${on ? 'ВКЛ' : 'ВЫКЛ'}</span></span><span class="lbl">${name.t}</span></button>`;
 
   const statusLine = () => {
-    if (S.r === 'owner' || S.r === 'admin') return `<b>${ROLE[S.r]}</b>: все функции открыты`;
-    if (S.r === 'paid') return `<b>${ROLE.paid}</b> ${S.pu === 0 ? 'действует навсегда' : 'действует до ' + fmtDate(S.pu)}`;
-    return `<b>${ROLE.free}</b>: платные функции закрыты`;
+    const px = S.s.px || 'shine';
+    const role = `<span class="px px-${px}">${ROLE[S.r]}</span>`;
+    if (S.r === 'owner' || S.r === 'admin') return `${role}: все функции открыты`;
+    if (S.r === 'paid') return `${role} ${S.pu === 0 ? 'действует навсегда' : 'действует до ' + fmtDate(S.pu)}`;
+    return `${role}: платные функции закрыты`;
   };
 
   function homeHTML() {
@@ -516,6 +541,11 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
       <div class="line"><span class="name">Часовой пояс</span>
         <span class="stepper"><button data-act="tz" data-d="-1" aria-label="Минус час">−</button><output id="tz-out">${tzLabel(D.tz)}</output><button data-act="tz" data-d="1" aria-label="Плюс час">+</button></span></div>
 
+      <h2>Префикс статуса</h2>
+      <p class="sub">Твой статус — владелец, администратор или подписка — подсвечивается этим стилем.</p>
+      <div class="bubble out" style="max-width:100%;align-self:auto;border-radius:16px;text-align:center"><span class="px px-${D.px}">${ROLE[S.r]}</span></div>
+      <div class="chips">${PX.map(([k, t]) => `<button class="pill ${D.px === k ? 'sel' : ''}" data-act="px" data-v="${k}">${t}</button>`).join('')}</div>
+
       <h2>Форматирование сообщений</h2><p class="sub">Бот сам оформит каждое твоё сообщение.</p>
       <div class="thread"><div class="bubble out" id="fmt-preview">${previewBubble()}<span class="time">${fmtTime(nowSec)}</span></div></div>
       <div class="chips">${FMT.map(([k, t]) => `<button class="pill ${D.fm === k ? 'sel' : ''}" data-act="fmt" data-v="${k}">${t}</button>`).join('')}</div>
@@ -542,7 +572,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
     const cls = S.r === 'paid' ? 'paid' : S.r === 'free' ? 'free' : 'admin';
     const until = S.r === 'paid' ? (S.pu === 0 ? 'навсегда' : 'до ' + fmtDate(S.pu)) : '';
     return `<div class="who-big"><div class="avatar xl" id="avatar-xl"></div><div><div class="nm">${esc(S.n)}</div>
-        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls}">${ROLE[S.r]}${until ? ' ' + until : ''}</span></div></div>
+        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls} px px-${S.s.px || 'shine'}">${ROLE[S.r]}${until ? ' ' + until : ''}</span></div></div>
       <ul class="rows" style="margin-top:12px">
         <li><button class="row" data-act="copy" data-c="${S.id}"><span class="grow">Мой ID</span><span class="value">${S.id}</span></button></li>
         <li class="row"><span class="grow">В боте с</span><span class="value">${S.j ? fmtDate(S.j) : '—'}</span></li>
@@ -644,6 +674,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
       case 'preset': D.cf = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
       case 'tz': { const v = Math.max(-12, Math.min(14, Number(D.tz) + Number(t.dataset.d))); D.tz = v; hap('select'); $('#tz-out').textContent = tzLabel(v); $('#nick-preview').textContent = nick(); paintSavebar(); break; }
       case 'fmt': D.fm = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
+      case 'px': D.px = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
       case 'peek': t.classList.toggle('open'); break;
       case 'feature': if (isPaid) copy(t.dataset.c); else openSheet(); break;
       case 'copy': if (t.dataset.locked) openSheet(); else copy(t.dataset.c); break;
