@@ -332,6 +332,15 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
 .demo-note { border: 1px dashed rgba(255, 122, 26, .35); }
 .hint code, .sub code { border: 1px solid rgba(255, 122, 26, .18); }
 
+/* галочка верификации — оранжевая хэллоуинская */
+.vrf {
+  display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px;
+  border-radius: 50%; background: linear-gradient(135deg, #ffb03a, #ff7a1a); color: var(--ink);
+  font-weight: 800; font-size: 13px; line-height: 1; vertical-align: -3px; margin-left: 6px;
+  box-shadow: 0 0 12px rgba(255, 140, 43, .65), inset 0 1px 0 rgba(255, 255, 255, .45);
+  animation: px-glow 1.8s ease-in-out infinite;
+}
+
 /* читаемость префиксов: тёмная подложка и контрастная тень */
 .px-rainbow, .px-shine { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .8)) drop-shadow(0 0 8px rgba(0, 0, 0, .45)); }
 .badge.px-rainbow, .badge.px-red, .badge.px-shine { background: #1d0e1f !important; box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .4), 0 0 16px rgba(255, 122, 26, .22); }
@@ -572,11 +581,14 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
   const sig = (name, on) => `<button class="cbtn ${on ? 'on' : 'off'}" data-act="toggle" data-k="${name.k}" aria-pressed="${on}">
       <span class="r1"><span class="ico">${name.ico}</span><span class="state">${on ? 'ВКЛ' : 'ВЫКЛ'}</span></span><span class="lbl">${name.t}</span></button>`;
 
+  const VERIFIED = '<span class="vrf" title="Официальный аккаунт разработчика" aria-label="Верифицирован">✓</span>';
+  const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="font-size:.82em">Development Company</span>' : '');
+
   const statusLine = () => {
     const px = S.s.px || 'shine';
-    const role = `<span class="px px-${px}">${ROLE[S.r]}</span>`;
-    if (S.r === 'owner' || S.r === 'admin') return `${role}: все функции открыты`;
-    if (S.r === 'paid') return `${role} ${S.pu === 0 ? 'действует навсегда' : 'действует до ' + fmtDate(S.pu)}`;
+    const role = `<span class="px px-${px}">${ROLE[S.r]}</span>${S.r === 'owner' ? VERIFIED : ''}`;
+    if (S.r === 'owner' || S.r === 'admin') return `${role}${devCompany()}: все функции открыты`;
+    if (S.r === 'paid') return `${role}${devCompany()} ${S.pu === 0 ? 'действует навсегда' : 'действует до ' + fmtDate(S.pu)}`;
     return `${role}: платные функции закрыты`;
   };
 
@@ -655,7 +667,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
     const cls = S.r === 'paid' ? 'paid' : S.r === 'free' ? 'free' : 'admin';
     const until = S.r === 'paid' ? (S.pu === 0 ? 'навсегда' : 'до ' + fmtDate(S.pu)) : '';
     return `<div class="who-big"><div class="avatar xl" id="avatar-xl"></div><div><div class="nm">${esc(S.n)}</div>
-        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls} px px-${S.s.px || 'shine'}">${ROLE[S.r]}${until ? ' ' + until : ''}</span></div></div>
+        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls} px px-${S.s.px || 'shine'}">${S.r === 'owner' ? 'Development Company · ' : ''}${ROLE[S.r]}${until ? ' ' + until : ''}${S.r === 'owner' ? VERIFIED : ''}</span></div></div>
       <ul class="rows" style="margin-top:12px">
         <li><button class="row" data-act="copy" data-c="${S.id}"><span class="grow">Мой ID</span><span class="value">${S.id}</span></button></li>
         <li class="row"><span class="grow">В боте с</span><span class="value">${S.j ? fmtDate(S.j) : '—'}</span></li>
