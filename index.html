@@ -368,6 +368,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
     </section>
     <section class="tab" id="tab-profile"></section>
     <section class="tab" id="tab-logs"></section>
+    <section class="tab" id="tab-event"></section>
     <section class="tab" id="tab-admin"></section>
   </main>
 </div>
@@ -746,13 +747,26 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
   function renderCommands() { $('#cmd-list').innerHTML = commandsHTML($('#cmd-search').value); }
   function renderProfile() { $('#tab-profile').innerHTML = profileHTML(); paintAvatars(); }
   function renderAdmin() { $('#tab-admin').innerHTML = adminHTML(); }
+  function eventHTML() {
+    return `<div class="thread">
+      <div class="bubble pop"><div class="who">userbot</div>
+        <p>🎃 <b>Хэллоуинский эвент</b> пройдёт <b>26 октября</b>!</p>
+        <p>Следи за анонсами — разработчик подготовит сюрпризы. Не пропусти!</p>
+        <span class="time">🕯️ 26.10</span></div>
+      <div class="kbd pop">
+        <button class="cbtn blue" data-act="refresh"><span class="r1"><span class="ico">${'🔄'}</span></span><span class="lbl">Обновить данные</span></button>
+        <button class="cbtn gold" data-act="buy"><span class="r1"><span class="ico">💎</span></span><span class="lbl">Платный статус</span></button>
+      </div>
+    </div>`;
+  }
+  function renderEvent() { $('#tab-event').innerHTML = eventHTML(); }
   function renderLogs() { $('#tab-logs').innerHTML = logsHTML(); }
   function renderToggles() { renderHome(); renderSettings(); paintSavebar(); }
 
   /* ---------- вкладки ---------- */
   const TABS = [
     ['home', 'Главная', ICON.home], ['settings', 'Настройки', ICON.sliders], ['cmds', 'Команды', ICON.terminal],
-    ['profile', 'Профиль', ICON.user], ...(isOwner ? [['logs', 'Логи', ICON.logs]] : []), ...(isAdmin ? [['admin', 'Админ', ICON.shield]] : []),
+    ['profile', 'Профиль', ICON.user], ...(isOwner ? [['logs', 'Логи', ICON.logs]] : []), ['event', 'Event', '🎃'], ...(isAdmin ? [['admin', 'Админ', ICON.shield]] : []),
   ];
   let currentTab = 'home';
   function show(tab) {
@@ -859,7 +873,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
     if (!isAdmin) $('#tab-admin').remove();
     if (!isOwner) $('#tab-logs').remove();
     $('#demo-note').hidden = !demo;
-    renderHome(); renderSettings(); renderCommands(); renderProfile(); if (isOwner) renderLogs(); if (isAdmin) renderAdmin();
+    renderHome(); renderSettings(); renderCommands(); renderProfile(); if (isOwner) renderLogs(); renderEvent(); if (isAdmin) renderAdmin();
     paintAvatars(); paintSavebar();
     const saved = store.get('tab');
     show(TABS.some((t) => t[0] === saved) ? saved : 'home');
