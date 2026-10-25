@@ -357,6 +357,30 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
 .wheel output.tick { animation: candy-tick .09s ease; }
 @keyframes candy-tick { 0% { transform: scale(.78); opacity: .4; } 100% { transform: scale(1); opacity: 1; } }
 
+.candy-sub { text-align: center; margin: 10px 2px 0; font-size: 12.5px; color: var(--muted); }
+.candy-sub b { color: var(--text); font-variant-numeric: tabular-nums; }
+
+/* хэллоуинский переливающийся префикс (магазин эвента) */
+.px-halloween { background: linear-gradient(90deg, #ff7a1a, #b04bff, #3dff9a, #ffb347, #ff4d6d, #ff7a1a); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: px-rainbow 2.4s linear infinite; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .8)) drop-shadow(0 0 8px rgba(176, 75, 255, .35)); }
+.badge.px-halloween { background: #1d0e1f !important; box-shadow: inset 0 0 0 1px rgba(176, 75, 255, .5), 0 0 16px rgba(255, 122, 26, .25); }
+.badge.hm { margin-top: 8px; }
+
+/* лидерборд и магазин */
+.lb { margin: 0; padding: 0; list-style: none; background: var(--surface); border: 1px solid rgba(255, 122, 26, .22); border-radius: 18px; padding: 6px 12px; }
+.lb-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+.lb-row:first-child { border-top: 0; }
+.lb-row.me { background: rgba(255, 122, 26, .14); border-radius: 12px; padding-left: 8px; padding-right: 8px; margin: 0 -8px; border-top-color: transparent; }
+.lb-rank { width: 30px; flex: none; text-align: center; font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.lb-name { font-weight: 700; overflow-wrap: anywhere; }
+.lb-un { color: var(--muted); font-size: 12.5px; }
+.lb-c { margin-left: auto; flex: none; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--gold); }
+.shop { margin: 0; padding: 0 12px; list-style: none; background: var(--surface); border: 1px solid rgba(255, 122, 26, .22); border-radius: 18px; }
+.shop .row .ico { font-size: 22px; }
+.shop-buy { flex: none; padding: 9px 13px; border-radius: 12px; font-weight: 800; font-size: 14px; font-variant-numeric: tabular-nums; background: linear-gradient(135deg, #ffd76b, #f09a12); color: var(--ink); }
+.shop-buy:active { transform: scale(.95); }
+.shop-buy.poor { background: var(--surface-2); color: var(--muted); }
+.shop-own { flex: none; font-weight: 800; font-size: 13px; color: var(--go); }
+
 /* логи */
 .lg-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; margin-top: 8px; }
 .lg-msg { overflow-wrap: break-word; }
@@ -434,7 +458,8 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
   }
   const nowSec = Math.floor(Date.now() / 1000);
   const DEMO = {
-    v: 1, t: nowSec, id: 8102570887, n: 'Матвей', u: 'matvej', r: 'admin', pu: null, j: nowSec - 86400 * 41, c: 1, cv: 120,
+    v: 1, t: nowSec, id: 8102570887, n: 'Матвей', u: 'matvej', r: 'admin', pu: null, j: nowSec - 86400 * 41, c: 1, cv: 120, cs: 0, ct: nowSec + 840, hm: 0, hc: 0, rk: 4,
+    lb: [['Артём', 'artem_x', 482, 1], ['Матвей Dev', 'dystrolyzing', 371, 2], ['Лена', 'lena', 240, 0], ['Игорь', '', 96, 0]],
     sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold', px: 'shine' },
     a: { u: 128, p: 23, b: 4, m: 3, c: 41, k: 6 },
     lg: [
@@ -578,7 +603,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
   const FMT = [['off', 'Выкл'], ['auto', 'Авто'], ['bold', 'Жирный'], ['italic', 'Курсив'], ['underline', 'Подчёркнутый'],
     ['strike', 'Зачёркнутый'], ['spoiler', 'Спойлер'], ['mono', 'Моно'], ['quote', 'Цитата']];
   const NICK_PRESETS = ['{name} | {time}', '{name} • {time}', '{time} {name}', '{name} {time}'];
-  const PX = [['rainbow', 'Радужный'], ['red', 'Красный'], ['dark', 'Тёмный'], ['shine', 'Переливающийся']];
+  const PX = [['rainbow', 'Радужный'], ['red', 'Красный'], ['dark', 'Тёмный'], ['shine', 'Переливающийся'], ['halloween', 'Хэллоуин 🎃']];
   const OPS = [
     { id: 'ban', ico: '🚫', t: 'Забанить', kind: 'ref', color: 'off', ask: 'Забанить пользователя?' },
     { id: 'unban', ico: '✅', t: 'Разбанить', kind: 'ref', color: 'on' },
@@ -592,17 +617,31 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
   const AF = { ref: '', days: 30, code: '', uses: 1, pdays: 30, text: '' };
   let openOp = null;
 
-  /* ---------- конфетки владельца: баланс и рулетка ---------- */
+  /* ---------- конфетки: баланс, рулетка (кд 10 мин), лидерборд, магазин ---------- */
+  /* Всё настоящее считает бот и хранит в базе: окно приложения — витрина. Рулетка и покупки уходят боту
+     (sendData), он отвечает в чат и присылает свежую панель. В демо-режиме всё считается локально. */
   let candies = Number(S.cv || 0);
   let spinning = false;
+  const SPIN_CD = 600, TICK_AMT = 2;
   const CANDY_PRIZES = [1, 5, 10, 25];
-  const rollCandy = () => {
+  const rollCandy = () => {   // только для демо: на деле приз выбирает бот с теми же шансами
     const r = Math.random();
     if (r < .52) return 1;   // 52%
     if (r < .80) return 5;   // 28%
     if (r < .93) return 10;  // 13%
     return 25;               // 7% — маленький шанс
   };
+  const nowS = () => Math.floor(Date.now() / 1000);
+  const spinLeft = () => Math.max(0, Number(S.cs || 0) - nowS());
+  const tickLeft = () => (S.ct ? Math.max(0, Number(S.ct) - nowS()) : 0);
+  const mmss = (sec) => `${Math.floor(sec / 60)}:${pad(sec % 60)}`;
+  const HM_PREFIX = 'Hallowen Maniac';
+  const SHOP = [
+    { id: 'sub14', ico: '💎', t: 'Подписка на 14 дней', d: 'Платные функции на две недели', price: 200 },
+    { id: 'sub90', ico: '👑', t: 'Подписка на 90 дней', d: 'Платные функции на три месяца', price: 666 },
+    { id: 'prefix', ico: '🎃', t: `Префикс «${HM_PREFIX}»`, d: 'Дополнительный префикс в профиле', price: 100, flag: 'hm' },
+    { id: 'color', ico: '🌈', t: 'Хэллоуинский цвет префикса', d: 'Переливающийся оранжево-фиолетовый цвет статуса. Включается в Настройках', price: 999, flag: 'hc' },
+  ];
 
   /* ---------- разметка ---------- */
   const sig = (name, on) => `<button class="cbtn ${on ? 'on' : 'off'}" data-act="toggle" data-k="${name.k}" aria-pressed="${on}">
@@ -615,7 +654,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
 
   const statusLine = () => {
     const px = S.s.px || 'shine';
-    const role = `<span class="px px-${px}">${ROLE[S.r]}</span>${S.r === 'owner' ? VERIFIED : ''}`;
+    const role = `<span class="px px-${px}">${ROLE[S.r]}</span>${S.r === 'owner' ? VERIFIED : ''}${S.hm ? ' <span class="px px-halloween" style="font-size:.82em">🎃 ' + HM_PREFIX + '</span>' : ''}`;
     if (S.r === 'owner' || S.r === 'admin') return `${role}${devCompany()}: все функции открыты`;
     if (S.r === 'paid') return `${role}${devCompany()} ${S.pu === 0 ? 'действует навсегда' : 'действует до ' + fmtDate(S.pu)}`;
     return `${role}: платные функции закрыты`;
@@ -668,7 +707,8 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
       <h2>Префикс статуса</h2>
       <p class="sub">Твой статус — владелец, администратор или подписка — подсвечивается этим стилем.</p>
       <div class="bubble" style="max-width:100%;align-self:auto;border-radius:16px;text-align:center"><span class="px px-${D.px}">${ROLE[S.r]}</span></div>
-      <div class="chips">${PX.map(([k, t]) => `<button class="pill ${D.px === k ? 'sel' : ''}" data-act="px" data-v="${k}">${t}</button>`).join('')}</div>
+      <div class="chips">${PX.map(([k, t]) => `<button class="pill ${D.px === k ? 'sel' : ''}" data-act="px" data-v="${k}">${t}${k === 'halloween' && !S.hc ? ' 🔒' : ''}</button>`).join('')}</div>
+      ${S.hc ? '' : '<p class="hint">Цвет «Хэллоуин» открывается в магазине во вкладке Event за 999 🍬.</p>'}
 
       <h2>Форматирование сообщений</h2><p class="sub">Бот сам оформит каждое твоё сообщение.</p>
       <div class="thread"><div class="bubble out" id="fmt-preview">${previewBubble()}<span class="time">${fmtTime(nowSec)}</span></div></div>
@@ -698,7 +738,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
     const cls = S.r === 'paid' ? 'paid' : S.r === 'free' ? 'free' : 'admin';
     const until = S.r === 'paid' ? (S.pu === 0 ? 'навсегда' : 'до ' + fmtDate(S.pu)) : '';
     return `<div class="who-big"><div class="avatar xl" id="avatar-xl"></div><div><div class="nm">${esc(S.n)}</div>
-        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls} px px-${S.s.px || 'shine'}">${S.r === 'owner' ? 'Development Company · ' : ''}${ROLE[S.r]}${until ? ' ' + until : ''}${isVerified ? VERIFIED : ''}</span>${isVerified ? VERIFIED_SUB : ''}</div></div>
+        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls} px px-${S.s.px || 'shine'}">${S.r === 'owner' ? 'Development Company · ' : ''}${ROLE[S.r]}${until ? ' ' + until : ''}${isVerified ? VERIFIED : ''}</span>${S.hm ? `<br><span class="badge hm px px-halloween">🎃 ${HM_PREFIX}</span>` : ''}${isVerified ? VERIFIED_SUB : ''}</div></div>
       <ul class="rows" style="margin-top:12px">
         <li><button class="row" data-act="copy" data-c="${S.id}"><span class="grow">Мой ID</span><span class="value">${S.id}</span></button></li>
         <li class="row"><span class="grow">В боте с</span><span class="value">${S.j ? fmtDate(S.j) : '—'}</span></li>
@@ -790,30 +830,57 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
   function renderCommands() { $('#cmd-list').innerHTML = commandsHTML($('#cmd-search').value); }
   function renderProfile() { $('#tab-profile').innerHTML = profileHTML(); paintAvatars(); }
   function renderAdmin() { $('#tab-admin').innerHTML = adminHTML(); }
+  const medal = (i) => ['🥇', '🥈', '🥉'][i] || String(i + 1);
+  const vrfOf = (v) => (v === 2 ? VERIFIED_DEV : v === 1 ? VERIFIED_STAR : '');
+  function leaderboardHTML() {
+    const lb = Array.isArray(S.lb) ? S.lb : [];
+    const rk = Number(S.rk || 0);
+    const row = (i, [n, u, c, v], me) => `<li class="lb-row ${me ? 'me' : ''}"><span class="lb-rank">${medal(i)}</span>
+      <span class="grow" style="min-width:0"><span class="lb-name">${esc(n)}</span>${vrfOf(v)}${u ? `<br><span class="lb-un">@${esc(u)}</span>` : ''}</span>
+      <span class="lb-c">🍬 ${Number(c).toLocaleString('ru-RU')}</span></li>`;
+    if (!lb.length) return '<p class="sub" style="margin-top:0">Пока никого нет: крути рулетку и стань первым!</p>';
+    const rows = lb.map((e, i) => row(i, e, i + 1 === rk)).join('');
+    const mine = rk > lb.length && candies > 0
+      ? row(rk - 1, [S.n, S.u || '', candies, S.r === 'owner' ? 2 : Number(S.id) === 8102570887 ? 1 : 0], true) : '';
+    return `<ul class="lb">${rows}${mine ? '<li class="lb-row" style="justify-content:center;color:var(--muted)">⋯</li>' + mine : ''}</ul>`;
+  }
+  function shopHTML() {
+    return `<ul class="shop">${SHOP.map((g) => {
+      const owned = g.flag && S[g.flag];
+      return `<li class="row"><span class="ico">${g.ico}</span><span class="grow"><span class="name">${g.t}</span><br><span class="desc">${g.d}</span></span>
+        ${owned ? '<span class="shop-own">✓ Куплено</span>' : `<button class="shop-buy ${candies >= g.price ? '' : 'poor'}" data-act="shop" data-id="${g.id}">🍬 ${g.price}</button>`}</li>`;
+    }).join('')}</ul>`;
+  }
   function eventHTML() {
-    if (S.r === 'owner') {
-      return `<div class="thread">
-      <div class="bubble pop"><div class="who">userbot</div>
-        <p>🎃 <b>Хэллоуинский эвент</b> пройдёт <b>26 октября</b>!</p>
-        <p>Только для тебя, владелец: крути рулетку и копи конфетки 🍬</p>
-        <span class="time">🕯️ 26.10</span></div>
-      <div class="candy-card pop">
-        <div class="candy-bal"><span class="name">Баланс конфеток</span><b id="candy-bal">🍬 ${candies}</b></div>
-        <div class="wheel" id="wheel"><output id="wheel-num">🍬</output></div>
-        <button class="cbtn gold wide" id="spin-btn" data-act="spin" ${spinning ? 'disabled' : ''}><span class="lbl" style="flex:none">🎰 Крутануть рулетку</span></button>
-        <p class="hint" style="text-align:center;margin-top:10px">Выпадает 1, 5, 10 или 25 конфеток. Джекпот — маленький шанс!</p>
-      </div></div>`;
-    }
+    const tl = tickLeft();
+    const accrual = S.c > 0
+      ? `Бот подключён: каждые 25 минут <b>+${TICK_AMT} 🍬</b>. Следующие через <b id="tick-left">${tl > 0 ? mmss(tl) : 'совсем скоро'}</b>.`
+      : `Подключи бота (Настройки Telegram → Business → Чат-боты), и каждые 25 минут будет капать <b>+${TICK_AMT} 🍬</b>.`;
     return `<div class="thread">
       <div class="bubble pop"><div class="who">userbot</div>
-        <p>🎃 <b>Хэллоуинский эвент</b> пройдёт <b>26 октября</b>!</p>
-        <p>Следи за анонсами — разработчик подготовит сюрпризы. Не пропусти!</p>
-        <span class="time">🕯️ 26.10</span></div>
-      <div class="kbd pop">
-        <button class="cbtn blue" data-act="refresh"><span class="r1"><span class="ico">${'🔄'}</span></span><span class="lbl">Обновить данные</span></button>
-        <button class="cbtn gold" data-act="buy"><span class="r1"><span class="ico">💎</span></span><span class="lbl">Платный статус</span></button>
-      </div>
-    </div>`;
+        <p>🎃 <b>Хэллоуинский эвент</b> уже идёт!</p>
+        <p>Крути рулетку, копи конфетки 🍬, попадай в топ и обменивай их в магазинчике.</p>
+        <span class="time">🕯️ ${fmtTime(S.t)}</span></div>
+      <div class="candy-card pop">
+        <div class="candy-bal"><span class="name">Баланс конфеток</span><b id="candy-bal">🍬 ${candies.toLocaleString('ru-RU')}</b></div>
+        <div class="wheel" id="wheel"><output id="wheel-num">🍬</output></div>
+        <button class="cbtn gold wide" id="spin-btn" data-act="spin" ${spinning || spinLeft() > 0 ? 'disabled' : ''}><span class="lbl" style="flex:none">${spinLeft() > 0 ? '⏳ Рулетка через ' + mmss(spinLeft()) : '🎰 Крутануть рулетку'}</span></button>
+        <p class="hint" style="text-align:center;margin-top:10px">Выпадает 1, 5, 10 или 25 конфеток. Джекпот — маленький шанс! Кулдаун 10 минут.</p>
+        <p class="candy-sub">${accrual}</p>
+      </div></div>
+      <h2>🏆 Лидерборд</h2>
+      ${leaderboardHTML()}
+      <h2>🛍 Магазинчик</h2>
+      <p class="sub">Трать конфетки на подписку и хэллоуинские префиксы.</p>
+      ${shopHTML()}
+      <button class="cbtn blue wide" style="margin-top:16px" data-act="refresh"><span class="lbl" style="flex:none">🔄 Обновить баланс и топ</span></button>
+      <p class="hint" style="text-align:center">Окно закроется, бот пришлёт свежую панель.</p>`;
+  }
+  function tickTimers() {
+    const b = $('#spin-btn');
+    if (b && !spinning) { const l = spinLeft(); b.disabled = l > 0; $('.lbl', b).textContent = l > 0 ? `⏳ Рулетка через ${mmss(l)}` : '🎰 Крутануть рулетку'; }
+    const t = $('#tick-left');
+    if (t) { const l = tickLeft(); t.textContent = l > 0 ? mmss(l) : 'совсем скоро'; }
   }
   function renderEvent() { $('#tab-event').innerHTML = eventHTML(); }
   function renderLogs() { $('#tab-logs').innerHTML = logsHTML(); }
@@ -846,35 +913,55 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
       case 'preset': D.cf = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
       case 'tz': { const v = Math.max(-12, Math.min(14, Number(D.tz) + Number(t.dataset.d))); D.tz = v; hap('select'); $('#tz-out').textContent = tzLabel(v); $('#nick-preview').textContent = nick(); paintSavebar(); break; }
       case 'fmt': D.fm = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
-      case 'px': D.px = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
+      case 'px': if (t.dataset.v === 'halloween' && !S.hc) { toast('Цвет «Хэллоуин» продаётся в магазине Event за 999 🍬'); hap('warning'); break; } D.px = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
       case 'peek': t.classList.toggle('open'); break;
       case 'feature': if (isPaid) copy(t.dataset.c); else openSheet(); break;
       case 'copy': if (t.dataset.locked) openSheet(); else copy(t.dataset.c); break;
       case 'buy': openBuy(); break;
       case 'spin': {
         if (spinning) break;
+        const left = spinLeft();
+        if (left > 0) { toast(`Рулетка перезаряжается: ${mmss(left)}`); hap('warning'); break; }
         spinning = true;
         const btn = $('#spin-btn'); if (btn) btn.disabled = true;
         const out = $('#wheel-num');
-        const final = rollCandy();
+        const final = demo ? rollCandy() : 0;
         let ticks = 0;
         const iv = setInterval(() => {
           if (!out || !out.isConnected) { clearInterval(iv); spinning = false; return; }
           out.textContent = CANDY_PRIZES[Math.floor(Math.random() * 4)];
           out.classList.remove('tick'); void out.offsetWidth; out.classList.add('tick');
           hap('light');
-          if (++ticks >= 16) {
-            clearInterval(iv);
-            out.textContent = final;
-            out.classList.remove('tick');
-            candies += final; S.cv = candies;
-            const bal = $('#candy-bal'); if (bal) bal.textContent = `🍬 ${candies}`;
-            spinning = false;
-            const b2 = $('#spin-btn'); if (b2) b2.disabled = false;
-            if (final >= 10) { hap('success'); toast(`🎉 Джекпот! +${final} конфеток`); }
-            else { hap('select'); toast(`+${final} конфеток`); }
+          if (++ticks < 14) return;
+          clearInterval(iv);
+          spinning = false;
+          out.classList.remove('tick');
+          if (demo) {
+            candies += final; S.cv = candies; S.cs = nowS() + SPIN_CD;
+            renderEvent();
+            if (final >= 10) { hap('success'); toast(`🎉 Джекпот! +${final} конфеток`); } else { hap('select'); toast(`+${final} конфеток`); }
+          } else {
+            out.textContent = '🍬';
+            send({ a: 'spin' }, 'Бот крутит рулетку…');   // приз выбирает и записывает бот
           }
         }, 90);
+        break;
+      }
+      case 'shop': {
+        const g = SHOP.find((x) => x.id === t.dataset.id);
+        if (!g) break;
+        if (g.flag && S[g.flag]) { toast('Уже куплено'); break; }
+        if (candies < g.price) { toast(`Не хватает конфеток: нужно ${g.price}, у тебя ${candies}`); hap('error'); break; }
+        ask(`Купить «${g.t}» за ${g.price} 🍬?`, () => {
+          if (demo) {
+            candies -= g.price; S.cv = candies;
+            if (g.flag) S[g.flag] = 1;
+            hap('success'); toast('Куплено (демо)');
+            renderEvent(); renderHome(); renderSettings(); renderProfile();
+            return;
+          }
+          send({ a: 'shop', item: g.id }, 'Оформляю покупку…');
+        });
         break;
       }
       case 'refresh': send({ a: 'refresh' }); break;
@@ -957,6 +1044,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
     $('#demo-note').hidden = !demo;
     renderHome(); renderSettings(); renderCommands(); renderProfile(); if (isOwner) renderLogs(); renderEvent(); if (isAdmin) renderAdmin();
     paintAvatars(); paintSavebar();
+    setInterval(tickTimers, 1000);
     const saved = store.get('tab');
     show(TABS.some((t) => t[0] === saved) ? saved : 'home');
   }
