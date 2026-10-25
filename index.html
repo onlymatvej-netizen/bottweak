@@ -347,6 +347,16 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
 .px-rainbow, .px-shine { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .8)) drop-shadow(0 0 8px rgba(0, 0, 0, .45)); }
 .badge.px-rainbow, .badge.px-red, .badge.px-shine { background: #1d0e1f !important; box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .4), 0 0 16px rgba(255, 122, 26, .22); }
 
+/* ---------- хэллоуин: баланс конфеток и рулетка ---------- */
+.candy-card { background: var(--surface); border: 1px solid rgba(255, 122, 26, .28); border-radius: 18px; padding: 16px; margin-top: 10px; box-shadow: 0 6px 20px rgba(0, 0, 0, .35), 0 0 22px rgba(255, 122, 26, .14); }
+.candy-bal { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.candy-bal .name { font-weight: 600; }
+.candy-bal b { font-size: 32px; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; background: linear-gradient(90deg, #ffb066, #ff7a1a); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.wheel { margin: 14px auto 12px; width: 132px; height: 132px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 35% 28%, #3d1c3d, #180b1e 72%); border: 3px dashed rgba(255, 140, 43, .55); box-shadow: 0 0 26px rgba(255, 122, 26, .28), inset 0 0 26px rgba(0, 0, 0, .55); }
+.wheel output { font-size: 42px; font-weight: 800; color: var(--gold); text-shadow: 0 0 18px rgba(255, 194, 75, .65); font-variant-numeric: tabular-nums; }
+.wheel output.tick { animation: candy-tick .09s ease; }
+@keyframes candy-tick { 0% { transform: scale(.78); opacity: .4; } 100% { transform: scale(1); opacity: 1; } }
+
 /* логи */
 .lg-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; margin-top: 8px; }
 .lg-msg { overflow-wrap: break-word; }
@@ -424,7 +434,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
   }
   const nowSec = Math.floor(Date.now() / 1000);
   const DEMO = {
-    v: 1, t: nowSec, id: 8102570887, n: 'Матвей', u: 'matvej', r: 'admin', pu: null, j: nowSec - 86400 * 41, c: 1,
+    v: 1, t: nowSec, id: 8102570887, n: 'Матвей', u: 'matvej', r: 'admin', pu: null, j: nowSec - 86400 * 41, c: 1, cv: 120,
     sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold', px: 'shine' },
     a: { u: 128, p: 23, b: 4, m: 3, c: 41, k: 6 },
     lg: [
@@ -581,6 +591,18 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
   ];
   const AF = { ref: '', days: 30, code: '', uses: 1, pdays: 30, text: '' };
   let openOp = null;
+
+  /* ---------- конфетки владельца: баланс и рулетка ---------- */
+  let candies = Number(S.cv || 0);
+  let spinning = false;
+  const CANDY_PRIZES = [1, 5, 10, 25];
+  const rollCandy = () => {
+    const r = Math.random();
+    if (r < .52) return 1;   // 52%
+    if (r < .80) return 5;   // 28%
+    if (r < .93) return 10;  // 13%
+    return 25;               // 7% — маленький шанс
+  };
 
   /* ---------- разметка ---------- */
   const sig = (name, on) => `<button class="cbtn ${on ? 'on' : 'off'}" data-act="toggle" data-k="${name.k}" aria-pressed="${on}">
@@ -769,6 +791,19 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
   function renderProfile() { $('#tab-profile').innerHTML = profileHTML(); paintAvatars(); }
   function renderAdmin() { $('#tab-admin').innerHTML = adminHTML(); }
   function eventHTML() {
+    if (S.r === 'owner') {
+      return `<div class="thread">
+      <div class="bubble pop"><div class="who">userbot</div>
+        <p>🎃 <b>Хэллоуинский эвент</b> пройдёт <b>26 октября</b>!</p>
+        <p>Только для тебя, владелец: крути рулетку и копи конфетки 🍬</p>
+        <span class="time">🕯️ 26.10</span></div>
+      <div class="candy-card pop">
+        <div class="candy-bal"><span class="name">Баланс конфеток</span><b id="candy-bal">🍬 ${candies}</b></div>
+        <div class="wheel" id="wheel"><output id="wheel-num">🍬</output></div>
+        <button class="cbtn gold wide" id="spin-btn" data-act="spin" ${spinning ? 'disabled' : ''}><span class="lbl" style="flex:none">🎰 Крутануть рулетку</span></button>
+        <p class="hint" style="text-align:center;margin-top:10px">Выпадает 1, 5, 10 или 25 конфеток. Джекпот — маленький шанс!</p>
+      </div></div>`;
+    }
     return `<div class="thread">
       <div class="bubble pop"><div class="who">userbot</div>
         <p>🎃 <b>Хэллоуинский эвент</b> пройдёт <b>26 октября</b>!</p>
@@ -780,7 +815,6 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
       </div>
     </div>`;
   }
-  function renderEvent() { $('#tab-event').innerHTML = eventHTML(); }
   function renderLogs() { $('#tab-logs').innerHTML = logsHTML(); }
   function renderToggles() { renderHome(); renderSettings(); paintSavebar(); }
 
@@ -816,6 +850,32 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
       case 'feature': if (isPaid) copy(t.dataset.c); else openSheet(); break;
       case 'copy': if (t.dataset.locked) openSheet(); else copy(t.dataset.c); break;
       case 'buy': openBuy(); break;
+      case 'spin': {
+        if (spinning) break;
+        spinning = true;
+        const btn = $('#spin-btn'); if (btn) btn.disabled = true;
+        const out = $('#wheel-num');
+        const final = rollCandy();
+        let ticks = 0;
+        const iv = setInterval(() => {
+          if (!out || !out.isConnected) { clearInterval(iv); spinning = false; return; }
+          out.textContent = CANDY_PRIZES[Math.floor(Math.random() * 4)];
+          out.classList.remove('tick'); void out.offsetWidth; out.classList.add('tick');
+          hap('light');
+          if (++ticks >= 16) {
+            clearInterval(iv);
+            out.textContent = final;
+            out.classList.remove('tick');
+            candies += final; S.cv = candies;
+            const bal = $('#candy-bal'); if (bal) bal.textContent = `🍬 ${candies}`;
+            spinning = false;
+            const b2 = $('#spin-btn'); if (b2) b2.disabled = false;
+            if (final >= 10) { hap('success'); toast(`🎉 Джекпот! +${final} конфеток`); }
+            else { hap('select'); toast(`+${final} конфеток`); }
+          }
+        }, 90);
+        break;
+      }
       case 'refresh': send({ a: 'refresh' }); break;
       case 'reset': KEYS.forEach((k) => { D[k] = S.s[k]; }); hap('light'); renderToggles(); toast('Изменения сброшены'); break;
       case 'save': {
