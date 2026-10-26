@@ -345,7 +345,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
 
 /* читаемость префиксов: тёмная подложка и контрастная тень */
 .px-rainbow, .px-shine { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .8)) drop-shadow(0 0 8px rgba(0, 0, 0, .45)); }
-.badge.px-rainbow, .badge.px-red, .badge.px-shine { background: #1d0e1f !important; box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .4), 0 0 16px rgba(255, 122, 26, .22); }
+.badge.pfx { background: #1d0e1f; box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .4), 0 0 16px rgba(255, 122, 26, .22); }
 
 /* ---------- хэллоуин: баланс конфеток и рулетка ---------- */
 .candy-card { background: var(--surface); border: 1px solid rgba(255, 122, 26, .28); border-radius: 18px; padding: 16px; margin-top: 10px; box-shadow: 0 6px 20px rgba(0, 0, 0, .35), 0 0 22px rgba(255, 122, 26, .14); }
@@ -362,7 +362,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
 
 /* хэллоуинский переливающийся префикс (магазин эвента) */
 .px-halloween { background: linear-gradient(90deg, #ff7a1a, #b04bff, #3dff9a, #ffb347, #ff4d6d, #ff7a1a); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: px-rainbow 2.4s linear infinite; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .8)) drop-shadow(0 0 8px rgba(176, 75, 255, .35)); }
-.badge.px-halloween { background: #1d0e1f !important; box-shadow: inset 0 0 0 1px rgba(176, 75, 255, .5), 0 0 16px rgba(255, 122, 26, .25); }
+.badge.hm.pfx { box-shadow: inset 0 0 0 1.5px rgba(168, 85, 247, .6), 0 0 18px rgba(168, 85, 247, .32); }
 .badge.hm { margin-top: 8px; }
 
 /* лидерборд и магазин */
@@ -463,7 +463,7 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
   }
   const nowSec = Math.floor(Date.now() / 1000);
   const DEMO = {
-    v: 1, t: nowSec, id: 8102570887, n: 'Матвей', u: 'matvej', r: 'owner', pu: null, j: nowSec - 86400 * 41, c: 1, cv: 120, cs: 0, ct: nowSec + 840, hm: 0, hc: 0, rk: 4,
+    v: 1, t: nowSec, id: 8102570887, n: 'Матвей', u: 'matvej', r: 'owner', pu: null, j: nowSec - 86400 * 41, c: 1, cv: 120, cs: 0, ct: nowSec + 840, hm: 1, hc: 0, rk: 4,
     lb: [['Артём', 'artem_x', 482, 1], ['Матвей Dev', 'dystrolyzing', 371, 2], ['Лена', 'lena', 240, 0], ['Игорь', '', 96, 0]],
     sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold', px: 'shine' },
     a: { u: 128, p: 23, b: 4, m: 3, c: 41, k: 6 },
@@ -742,8 +742,10 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
   function profileHTML() {
     const cls = S.r === 'paid' ? 'paid' : S.r === 'free' ? 'free' : 'admin';
     const until = S.r === 'paid' ? (S.pu === 0 ? 'навсегда' : 'до ' + fmtDate(S.pu)) : '';
+    const pxc = S.s.px || 'shine';
+    const pfxBadge = ['rainbow', 'red', 'shine', 'halloween'].includes(pxc);
     return `<div class="who-big"><div class="avatar xl" id="avatar-xl"></div><div><div class="nm">${esc(S.n)}</div>
-        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls} px px-${S.s.px || 'shine'}">${S.r === 'owner' ? 'Development Company · ' : ''}${ROLE[S.r]}${until ? ' ' + until : ''}${isVerified ? VERIFIED : ''}</span>${S.hm ? `<br><span class="badge hm px px-halloween">🎃 ${HM_PREFIX}</span>` : ''}${isVerified ? VERIFIED_SUB : ''}</div></div>
+        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls}${pfxBadge ? ' pfx' : ''}"><span class="px px-${pxc}">${S.r === 'owner' ? 'Development Company · ' : ''}${ROLE[S.r]}${until ? ' ' + until : ''}</span>${isVerified ? VERIFIED : ''}</span>${S.hm ? `<br><span class="badge hm pfx"><span class="px px-halloween">🎃 ${HM_PREFIX}</span></span>` : ''}${isVerified ? VERIFIED_SUB : ''}</div></div>
       <ul class="rows" style="margin-top:12px">
         <li><button class="row" data-act="copy" data-c="${S.id}"><span class="grow">Мой ID</span><span class="value">${S.id}</span></button></li>
         <li class="row"><span class="grow">В боте с</span><span class="value">${S.j ? fmtDate(S.j) : '—'}</span></li>
