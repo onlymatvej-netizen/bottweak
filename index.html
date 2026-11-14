@@ -76,6 +76,33 @@ button { cursor: pointer; border: 0; background: none; padding: 0; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .avatar.xl { width: 72px; height: 72px; font-size: 28px; }
 
+/* ---------- свечение профиля и орбита символов ---------- */
+.av-stage { position: relative; width: 136px; height: 136px; flex: none; }
+.av-core { position: absolute; inset: 24px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; font-weight: 800; color: var(--ink); background: var(--link); font-size: 30px; }
+.av-core img { width: 100%; height: 100%; object-fit: cover; }
+.orbit { position: absolute; inset: 0; pointer-events: none; animation: av-orbit 16s linear infinite; }
+.orbit b { position: absolute; left: 50%; top: 50%; margin: -15px; width: 30px; height: 30px; display: grid; place-items: center; font-weight: 400; font-size: 24px; line-height: 1; }
+.orbit b span { display: block; animation: av-orbit-rev 16s linear infinite; }
+@keyframes av-orbit { to { transform: rotate(360deg); } }
+@keyframes av-orbit-rev { to { transform: rotate(-360deg); } }
+.gl-green .av-core, .avatar.gl-green { border: 2px solid #46ff3c; box-shadow: 0 0 18px 4px rgba(70,255,60,.75), 0 0 52px 15px rgba(70,255,60,.42), inset 0 0 14px rgba(70,255,60,.55); }
+.gl-purple .av-core, .avatar.gl-purple { border: 2px solid #b04bff; box-shadow: 0 0 18px 4px rgba(176,75,255,.78), 0 0 52px 15px rgba(176,75,255,.45), inset 0 0 14px rgba(176,75,255,.55); }
+.gl-red .av-core, .avatar.gl-red { border: 2px solid #ff3b3b; box-shadow: 0 0 18px 4px rgba(255,59,59,.8), 0 0 52px 15px rgba(255,59,59,.45), inset 0 0 14px rgba(255,59,59,.55); }
+.gl-pink .av-core, .avatar.gl-pink { border: 2px solid #ff6bd6; box-shadow: 0 0 18px 4px rgba(255,107,214,.8), 0 0 52px 15px rgba(255,107,214,.45), inset 0 0 14px rgba(255,107,214,.55); }
+.gl-black .av-core, .avatar.gl-black { border: 2px solid rgba(255,255,255,.55); box-shadow: 0 0 18px 5px rgba(0,0,0,.95), 0 0 52px 16px rgba(0,0,0,.85), inset 0 0 16px rgba(0,0,0,.9); }
+.gl-white .av-core, .avatar.gl-white { border: 2px solid #ffffff; box-shadow: 0 0 18px 4px rgba(255,255,255,.85), 0 0 52px 15px rgba(255,255,255,.5), inset 0 0 14px rgba(255,255,255,.6); }
+@media (prefers-reduced-motion: reduce) { .orbit, .orbit b span { animation: none !important; } }
+
+/* ---------- темы мини-приложения (неон) ---------- */
+body { filter: var(--appf, none); }
+body[data-app="purple"] { --appf: hue-rotate(70deg) saturate(1.12); --appfi: hue-rotate(-70deg) saturate(.9); }
+body[data-app="green"] { --appf: hue-rotate(-72deg) saturate(1.1); --appfi: hue-rotate(72deg) saturate(.92); }
+body[data-app="red"] { --appf: hue-rotate(148deg) saturate(1.12); --appfi: hue-rotate(-148deg) saturate(.9); }
+body[data-app="pink"] { --appf: hue-rotate(112deg) saturate(1.18); --appfi: hue-rotate(-112deg) saturate(.86); }
+body[data-app="orange"] { --appf: hue-rotate(190deg) saturate(1.08); --appfi: hue-rotate(-190deg) saturate(.94); }
+body[data-app="black"] { --appf: brightness(.84) saturate(.72) contrast(1.1); --appfi: brightness(1.19) saturate(1.36) contrast(.92); }
+body[data-app] .avatar img, body[data-app] .av-core img, body[data-app] .vrf img { filter: var(--appfi, none); }
+
 .demo-note { margin: 4px 0 8px; padding: 10px 12px; border-radius: 12px; background: var(--surface); color: var(--muted); font-size: 13px; }
 
 /* ---------- разделы ---------- */
@@ -795,7 +822,7 @@ body {padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;}
   const DEMO = {
     v: 1, t: nowSec, id: 8102570887, n: 'Матвей', u: 'matvej', r: 'owner', pu: null, j: nowSec - 86400 * 41, c: 1, cv: 120, cs: 0, ct: nowSec + 840, hm: 1, hc: 0, rk: 4,
     lb: [['Артём', 'artem_x', 482, 1], ['Матвей Dev', 'dystrolyzing', 371, 2], ['Лена', 'lena', 240, 0], ['Игорь', '', 96, 0]],
-    sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold', px: 'shine' },
+    sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold', px: 'shine', glow: 'green', gs: '🔥', th: 'blue' },
     a: { u: 128, p: 23, b: 4, m: 3, c: 41, k: 6 },
     lg: [
       [nowSec - 60, 'ok', 'Панель открыта: @matvej (владелец)'],
@@ -809,7 +836,8 @@ body {padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;}
   const demo = !decoded;
   const D = { ...S.s };
   D.px = D.px || 'shine';                       // черновик настроек
-  const KEYS = ['sd', 'se', 'sm', 'ck', 'cf', 'tz', 'fm', 'px'];
+  D.glow = D.glow || ''; D.gs = D.gs || ''; D.th = D.th || 'blue';
+  const KEYS = ['sd', 'se', 'sm', 'ck', 'cf', 'tz', 'fm', 'px', 'glow', 'gs', 'th'];
 
   const isAdmin = S.r === 'owner' || S.r === 'admin';
   const isOwner = S.r === 'owner';
@@ -969,6 +997,9 @@ body {padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;}
     ['strike', 'Зачёркнутый'], ['spoiler', 'Спойлер'], ['mono', 'Моно'], ['quote', 'Цитата']];
   const NICK_PRESETS = ['{name} | {time}', '{name} • {time}', '{time} {name}', '{name} {time}'];
   const PX = [['rainbow', 'Радужный'], ['red', 'Красный'], ['dark', 'Тёмный'], ['shine', 'Переливающийся'], ['halloween', 'Хэллоуин']];
+const GL = [['', 'Выключено'], ['green', 'Зелёный'], ['purple', 'Фиолетовый'], ['red', 'Красный'], ['pink', 'Розовый'], ['black', 'Чёрный'], ['white', 'Белый']];
+const GL_DOT = { green: '#46ff3c', purple: '#b04bff', red: '#ff3b3b', pink: '#ff6bd6', black: '#111318', white: '#ffffff' };
+const THEMES = [['blue', 'Синяя'], ['purple', 'Фиолетовая'], ['green', 'Зелёная'], ['red', 'Красная'], ['pink', 'Розовая'], ['orange', 'Оранжевая'], ['black', 'Чёрная']];
   const OPS = [
     { id: 'ban', ico: ICON.ban, t: 'Забанить', kind: 'ref', color: 'off', ask: 'Забанить пользователя?' },
     { id: 'unban', ico: ICON.check, t: 'Разбанить', kind: 'ref', color: 'on' },
@@ -1099,13 +1130,45 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
 
   const isVerified = S.r === 'owner' || Number(S.id) === 8102570887;
   const VERIFIED_SUB = '<div class="vrf-sub">' + (S.r === 'owner' ? 'Аккаунт верифицирован командой «DEV»' : 'Аккаунт верифицирован организацией: КОЧ БРАТАН') + '</div>';
+  const glowCls = () => (D.glow ? ' gl-' + D.glow : '');
+  const orbitHTML = () => {
+    const syms = [...String(D.gs || '')].slice(0, 6);
+    if (!syms.length) return '';
+    const step = 360 / syms.length;
+    return `<div class="orbit" aria-hidden="true">${syms.map((ch, i) => `<b style="transform: rotate(${i * step}deg) translateX(63px) rotate(${-i * step}deg)"><span>${esc(ch)}</span></b>`).join('')}</div>`;
+  };
+  const avStageHTML = () => `<div class="av-stage${glowCls()}" id="av-stage">${orbitHTML()}<div class="av-core" id="av-core-xl"></div></div>`;
+  function applyAppTheme(name) {
+    const v = THEMES.some((t) => t[0] === name) ? name : 'blue';
+    if (v === 'blue') delete document.body.dataset.app; else document.body.dataset.app = v;
+    store.set('th', v);
+  }
+  function updateAvStage() {
+    const st = $('#av-stage');
+    if (st) st.outerHTML = avStageHTML();
+    const top = $('#avatar-top');
+    if (top) {
+      GL.forEach((g) => { if (g[0]) top.classList.remove('gl-' + g[0]); });
+      if (D.glow) top.classList.add('gl-' + D.glow);
+    }
+    paintAvatars();
+  }
+
   function profileHTML() {
     const cls = S.r === 'paid' ? 'paid' : S.r === 'free' ? 'free' : 'admin';
     const until = S.r === 'paid' ? (S.pu === 0 ? 'навсегда' : 'до ' + fmtDate(S.pu)) : '';
     const pxc = S.s.px || 'shine';
     const pfxBadge = ['rainbow', 'red', 'shine', 'halloween'].includes(pxc);
-    return `<div class="who-big"><div class="avatar xl" id="avatar-xl"></div><div><div class="nm">${esc(S.n)}</div>
+    return `<div class="who-big">${avStageHTML()}<div><div class="nm">${esc(S.n)}</div>
         <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls}${pfxBadge ? ' pfx' : ''}"><span class="px px-${pxc}">${S.r === 'owner' ? 'Development Company · ' : ''}${ROLE[S.r]}${until ? ' ' + until : ''}</span>${isVerified ? VERIFIED : ''}</span>${S.hm ? `<br><span class="badge hm pfx"><span class="px px-halloween"> ${HM_PREFIX}</span></span>` : ''}${isVerified ? VERIFIED_SUB : ''}</div></div>
+      <h2>Свечение профиля</h2>
+      <p class="sub">Неон вокруг аватарки — как в профиле Telegram.</p>
+      <div class="chips">${GL.map(([k, t]) => `<button class="pill ${D.glow === k ? 'sel' : ''}" data-act="glow" data-v="${k}">${k ? `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${GL_DOT[k]};box-shadow:0 0 8px ${GL_DOT[k]};margin-right:6px;vertical-align:-1px"></span>` : ''}${t}</button>`).join('')}</div>
+      <div class="composer" style="margin-top:12px"><input class="field" id="glow-sym" value="${esc(D.gs)}" maxlength="8" placeholder="Символы вокруг аватарки: 🔥 ⭐ 💀 🎃"></div>
+      <p class="hint">Введи до 6 символов или эмодзи — они будут кружиться вокруг аватарки.</p>
+      <h2>Тема приложения</h2>
+      <p class="sub">Цвет неона всей панели — под твой вкус.</p>
+      <div class="chips">${THEMES.map(([k, t]) => `<button class="pill ${D.th === k ? 'sel' : ''}" data-act="apptheme" data-v="${k}">${t}</button>`).join('')}</div>
       <ul class="rows" style="margin-top:12px">
         <li><button class="row" data-act="copy" data-c="${S.id}"><span class="grow">Мой ID</span><span class="value">${S.id}</span></button></li>
         <li class="row"><span class="grow">В боте с</span><span class="value">${S.j ? fmtDate(S.j) : '—'}</span></li>
@@ -1170,7 +1233,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
   function paintAvatars() {
     const colors = ['#5b93ff', '#34d27b', '#ffc24b', '#ff8a5b', '#b58bff', '#4fd6d6'];
     const photo = tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.photo_url;
-    $$('.avatar').forEach((a) => {
+    $$('.avatar, .av-core').forEach((a) => {
       a.style.background = colors[Math.abs(S.id) % colors.length];
       a.innerHTML = photo ? `<img src="${esc(photo)}" alt="" referrerpolicy="no-referrer">` : esc((S.n || '?').trim().charAt(0).toUpperCase());
       const img = $('img', a);
@@ -1282,6 +1345,8 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
       case 'tz': { const v = Math.max(-12, Math.min(14, Number(D.tz) + Number(t.dataset.d))); D.tz = v; hap('select'); $('#tz-out').textContent = tzLabel(v); $('#nick-preview').textContent = nick(); paintSavebar(); break; }
       case 'fmt': D.fm = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
       case 'px': if (t.dataset.v === 'halloween' && !S.hc) { toast('Цвет «Хэллоуин» продаётся в магазине Event за 999 жетонов'); hap('warning'); break; } D.px = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
+      case 'glow': D.glow = t.dataset.v; hap('select'); $$('.pill[data-act="glow"]').forEach((p) => p.classList.toggle('sel', p.dataset.v === D.glow)); updateAvStage(); paintSavebar(); break;
+      case 'apptheme': D.th = t.dataset.v; applyAppTheme(D.th); hap('select'); $$('.pill[data-act="apptheme"]').forEach((p) => p.classList.toggle('sel', p.dataset.v === D.th)); paintSavebar(); break;
       case 'peek': t.classList.toggle('open'); break;
       case 'feature': if (isPaid) copy(t.dataset.c); else openSheet(); break;
       case 'copy': if (t.dataset.locked) openSheet(); else copy(t.dataset.c); break;
@@ -1333,7 +1398,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
         break;
       }
       case 'refresh': send({ a: 'refresh' }); break;
-      case 'reset': KEYS.forEach((k) => { D[k] = S.s[k]; }); hap('light'); renderToggles(); toast('Изменения сброшены'); break;
+      case 'reset': KEYS.forEach((k) => { D[k] = S.s[k]; }); D.glow = D.glow || ''; D.gs = D.gs || ''; D.th = D.th || 'blue'; applyAppTheme(D.th); hap('light'); renderToggles(); renderProfile(); updateAvStage(); toast('Изменения сброшены'); break;
       case 'save': {
         if (!formatOk()) { toast('Исправь шаблон имени: нужен {time}'); hap('error'); show('settings'); break; }
         send({ a: 'set', s: changed() }, 'Отправляю боту…');
@@ -1353,7 +1418,8 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
   });
   document.addEventListener('input', (e) => {
     const t = e.target;
-    if (t.id === 'clock-fmt') {
+    if (t.id === 'glow-sym') { D.gs = t.value.slice(0, 8); updateAvStage(); paintSavebar(); }
+    else if (t.id === 'clock-fmt') {
       D.cf = t.value;
       $('#nick-preview').textContent = nick();
       $('#clock-hint').innerHTML = formatOk() ? 'Подставляются <code>{name}</code>, <code>{time}</code>, <code>{date}</code>.'
@@ -1412,6 +1478,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
     if (!isOwner) $('#tab-logs').remove();
     $('#demo-note').hidden = !demo;
     renderHome(); renderSettings(); renderCommands(); renderProfile(); if (isOwner) renderLogs(); renderEvent(); if (isAdmin) renderAdmin();
+    applyAppTheme(D.th); updateAvStage();
     paintAvatars(); paintSavebar();
     setInterval(tickTimers, 1000);
     const saved = store.get('tab');
