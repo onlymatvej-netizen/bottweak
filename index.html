@@ -820,6 +820,43 @@ body {padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;}
 #ev-sheet p { margin: 0 0 12px; }
 .avatar.other { background: linear-gradient(145deg, #82caff, #2866a8) !important; }
 
+/* ===== Баннер, описание и снежинки профиля ===== */
+.pf-banner { position: relative; height: 150px; border-radius: 22px; overflow: hidden; isolation: isolate;
+  box-shadow: inset 0 0 0 1px rgba(150, 205, 255, .22), 0 10px 26px rgba(0, 0, 0, .28); }
+.pf-banner > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+/* затемнение сверху и снизу */
+.pf-shade { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(3,10,22,.5) 0%, rgba(3,10,22,0) 34%, rgba(3,10,22,0) 52%, rgba(3,10,22,.78) 100%); }
+.pf-banner .sf { position: absolute; z-index: 2; color: #eaf7ff; pointer-events: none; opacity: .85; filter: drop-shadow(0 0 5px rgba(160,215,255,.9)); animation: sf-drift 7s ease-in-out infinite; }
+.pf-banner .sf svg { width: 100%; height: 100%; stroke-width: 1.7; }
+.pf-banner .sf.s1 { width: 22px; height: 22px; left: 9%; top: 14%; }
+.pf-banner .sf.s2 { width: 13px; height: 13px; left: 24%; top: 52%; animation-delay: -2.4s; animation-duration: 9s; opacity: .6; }
+.pf-banner .sf.s3 { width: 17px; height: 17px; right: 10%; top: 12%; animation-delay: -4s; }
+.pf-banner .sf.s4 { width: 10px; height: 10px; right: 27%; top: 44%; animation-delay: -1.2s; animation-duration: 8s; opacity: .55; }
+@keyframes sf-drift { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(7px) rotate(70deg); } }
+.pf-card { margin-top: 2px; }
+.pf-who { margin-top: -58px; padding: 0 2px 4px !important; align-items: flex-end !important; position: relative; }
+.pf-who > div:last-child { padding-bottom: 14px; min-width: 0; }
+.pf-bio { margin: 2px 4px 6px; font-size: 14px; line-height: 1.45; color: #cfe3f8; overflow-wrap: anywhere; }
+.pf-bio:empty { display: none; }
+.bn-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 2px 0 10px; }
+.bn-sw { width: 62px; height: 38px; border-radius: 12px; border: 2px solid transparent; box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); position: relative; overflow: hidden; }
+.bn-sw.sel { border-color: #bfe6ff; box-shadow: 0 0 14px rgba(120,200,255,.55); }
+.bn-sw.none { background: rgba(145,195,245,.08); display: grid; place-items: center; color: var(--muted); font-size: 16px; }
+.field.url { font-family: var(--mono); font-size: 13px; }
+#ev-sheet .pf-banner { margin: -2px 0 0; height: 118px; }
+#ev-sheet .pf-bio { text-align: center; margin: 2px 6px 10px; }
+#ev-sheet .av-stage { margin-top: -74px; position: relative; }
+
+/* баннер игрока в строке лидерборда */
+.lb-row { position: relative; overflow: hidden; }
+.lb-row > :not(.lb-bn) { position: relative; z-index: 1; }
+.lb-bn { position: absolute !important; inset: 0; z-index: 0; border-radius: 14px; overflow: hidden; pointer-events: none; opacity: .9; }
+.lb-bn > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.lb-bn::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5,14,28,.82) 0%, rgba(5,14,28,.55) 55%, rgba(5,14,28,.7) 100%); }
+.lb-bio { display: block; font-size: 12px; color: #b9d3ee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
+.has-bn { padding-left: 8px; padding-right: 8px; }
+
 </style>
 </head>
 <body>
@@ -891,13 +928,13 @@ body {padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;}
   const nowSec = Math.floor(Date.now() / 1000);
   const DEMO = {
     v: 1, t: nowSec, id: 8102570887, n: 'Матвей', u: 'matvej', r: 'owner', pu: null, j: nowSec - 86400 * 41, c: 1, 
-    sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold', px: 'shine', glow: 'green', gs: '🔥⭐💎💀', th: 'blue' },
+    sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold', px: 'shine', glow: 'green', gs: '🔥⭐💎💀', th: 'blue', bn: 'p4', bio: 'Делаю ботов на Python. Люблю зиму и неон.' },
     a: { u: 128, p: 23, b: 4, m: 3, c: 41, k: 6 },
     ev: 1, evo: 0, sf: 240, sn: 7, sh: 3, sc: 0, gv: 0, ct: nowSec + 840, wc: 37, wm: 0, rk: 4,
     wl: ['Здоровья всем', 'Хочу в горы', 'Чтобы сдать сессию', 'Больше времени на семью', 'Новый ноутбук', 'Мира и тепла', 'Выучить английский', 'Поехать к морю', 'Свой бизнес', 'Чтобы все были живы',
       'Счастья родителям', 'Собаку', 'Пробежать марафон', 'Спокойный год', 'Найти любовь', 'Хорошую работу', 'Свой дом', 'Больше путешествий', 'Исполнения желаний', 'Просто чудо'].map((t, i) => [18 + i, ['Аня', 'Максим', 'Дима', 'Лена', 'Саша'][i % 5], t]),
-    lb: [['Артём', 'artem_x', 64, 1280, 1, 0, 'paid', 'purple', '⭐❄️', '', 'rainbow'], ['Матвей', 'matvej', 52, 940, 2, 1, 'owner', 'green', '🔥💎', '', 'shine'],
-      ['Лена', 'lena_k', 41, 610, 0, 1, 'paid', 'pink', '🎀', '', 'red'], ['Дима', 'dimon', 30, 320, 0, 0, 'free', '', '', '', 'shine'], ['Саша', '', 22, 150, 0, 0, 'free', 'white', '✨', '', 'shine']],
+    lb: [['Артём', 'artem_x', 64, 1280, 1, 0, 'paid', 'purple', '⭐❄️', '', 'rainbow', 'p3', 'Собираю снежинки и мишек'], ['Матвей', 'matvej', 52, 940, 2, 1, 'owner', 'green', '🔥💎', '', 'shine', 'p2', 'Владелец, делаю ботов'],
+      ['Лена', 'lena_k', 41, 610, 0, 1, 'paid', 'pink', '🎀', '', 'red', 'p4', 'Люблю зиму'], ['Дима', 'dimon', 30, 320, 0, 0, 'free', '', '', '', 'shine'], ['Саша', '', 22, 150, 0, 0, 'free', 'white', '✨', '', 'shine']],
     lg: [
       [nowSec - 60, 'ok', 'Панель открыта: @matvej (владелец)'],
       [nowSec - 300, 'info', 'Настройки сохранены: sd=1, ck=1'],
@@ -911,10 +948,11 @@ body {padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;}
   const S = decoded || DEMO;
   const demo = !decoded;
   if (S.s && S.s.px === 'halloween') S.s.px = 'shine';  // эвент закончился, цвет недоступен
+  if (S.s) { S.s.bn = S.s.bn || ''; S.s.bio = S.s.bio || ''; }
   const D = { ...S.s };
   D.px = S.s.px || 'shine';                       // черновик настроек
-  D.glow = D.glow || ''; D.gs = D.gs || ''; D.th = D.th || 'blue'; D.av = D.av || '';
-  const KEYS = ['sd', 'se', 'sm', 'ck', 'cf', 'tz', 'fm', 'px', 'glow', 'gs', 'th', 'av'];
+  D.glow = D.glow || ''; D.gs = D.gs || ''; D.th = D.th || 'blue'; D.av = D.av || ''; D.bn = D.bn || ''; D.bio = D.bio || '';
+  const KEYS = ['sd', 'se', 'sm', 'ck', 'cf', 'tz', 'fm', 'px', 'glow', 'gs', 'th', 'av', 'bn', 'bio'];
 
   const isAdmin = S.r === 'owner' || S.r === 'admin';
   const isOwner = S.r === 'owner';
@@ -1199,6 +1237,22 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
     try { if (window.Intl && Intl.Segmenter) return Array.from(new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(str), (x) => x.segment); } catch (e) { /* ок */ }
     return [...str];
   };
+  /* ---------- баннер профиля ---------- */
+  const BN_PRESETS = [['p1', 'Полярная ночь', 'linear-gradient(135deg,#0b2a55,#1b5a9a 55%,#6cc4ff)'], ['p2', 'Аврора', 'linear-gradient(135deg,#071a2f,#0c6b5a 50%,#7affc2)'],
+    ['p3', 'Закат', 'linear-gradient(135deg,#2a0f3d,#a02a6a 55%,#ffb36b)'], ['p4', 'Неон', 'linear-gradient(135deg,#120a3a,#5b2bd8 55%,#ff5ce1)'],
+    ['p5', 'Рубин', 'linear-gradient(135deg,#2a0610,#a3112f 55%,#ff7a8a)'], ['p6', 'Иней', 'linear-gradient(135deg,#25476e,#8fc3ee 60%,#f2faff)']];
+  const bnBase = (bn) => (BN_PRESETS.find((x) => x[0] === bn) || BN_PRESETS[0])[2];
+  const bnUrl = (bn) => (/^https:\/\/[^\s"'<>\\]{4,280}$/i.test(bn || '') ? bn : '');
+  const SNOWFLAKES = '<span class="sf s1">' + ICON.flake + '</span><span class="sf s2">' + ICON.flake + '</span><span class="sf s3">' + ICON.flake + '</span><span class="sf s4">' + ICON.flake + '</span>';
+  /* баннер у всех: если свой не выбран, показываем «Полярную ночь»; снежинки — всегда */
+  const bannerHTML = (bn, id) => `<div class="pf-banner"${id ? ` id="${id}"` : ''} style="background:${bnBase(bn)}">${bnUrl(bn) ? `<img src="${esc(bnUrl(bn))}" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">` : ''}<i class="pf-shade"></i>${SNOWFLAKES}</div>`;
+  const rowBannerHTML = (bn) => (bn ? `<span class="lb-bn" style="background:${bnBase(bn)}">${bnUrl(bn) ? `<img src="${esc(bnUrl(bn))}" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">` : ''}</span>` : '');
+  function updateBanner() {
+    const b = $('#pf-banner'); if (b) b.outerHTML = bannerHTML(D.bn, 'pf-banner');
+    const bio = $('#pf-bio'); if (bio) bio.textContent = D.bio || '';
+    $$('.bn-sw[data-act="bn"]').forEach((x) => x.classList.toggle('sel', x.dataset.v === D.bn));
+  }
+
   const orbitHTML = (str = D.gs) => {
     const syms = graphemes(String(str || '')).filter((c) => c.trim()).slice(0, 6);
     if (!syms.length) return '';
@@ -1227,8 +1281,16 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
     const until = S.r === 'paid' ? (S.pu === 0 ? 'навсегда' : 'до ' + fmtDate(S.pu)) : '';
     const pxc = S.s.px || 'shine';
     const pfxBadge = ['rainbow', 'red', 'shine'].includes(pxc);
-    return `<div class="who-big">${avStageHTML()}<div><div class="nm">${esc(S.n)}</div>
-        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls}${pfxBadge ? ' pfx' : ''}"><span class="px px-${pxc}">${S.r === 'owner' ? 'Development Company · ' : ''}${ROLE[S.r]}${until ? ' ' + until : ''}</span>${isVerified ? VERIFIED : ''}${S.gv ? GRINCH_VRF : ''}</span>${S.gv ? '<div class="vrf-sub">Верификация Гринча: новогодний эвент</div>' : ''}${isVerified ? VERIFIED_SUB : ''}</div></div>
+    return `<div class="pf-card">${bannerHTML(D.bn, 'pf-banner')}<div class="who-big pf-who">${avStageHTML()}<div><div class="nm">${esc(S.n)}</div>
+        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls}${pfxBadge ? ' pfx' : ''}"><span class="px px-${pxc}">${S.r === 'owner' ? 'Development Company · ' : ''}${ROLE[S.r]}${until ? ' ' + until : ''}</span>${isVerified ? VERIFIED : ''}${S.gv ? GRINCH_VRF : ''}</span>${S.gv ? '<div class="vrf-sub">Верификация Гринча: новогодний эвент</div>' : ''}${isVerified ? VERIFIED_SUB : ''}</div></div><p class="pf-bio" id="pf-bio">${esc(D.bio)}</p></div>
+      <h2>Баннер профиля</h2>
+      <p class="sub">Шапка твоего профиля: её видят и другие игроки в лидерборде эвента.</p>
+      <div class="bn-grid"><button class="bn-sw none ${!D.bn ? 'sel' : ''}" data-act="bn" data-v="" aria-label="Без баннера">✕</button>${BN_PRESETS.map(([k, t, g]) => `<button class="bn-sw ${D.bn === k ? 'sel' : ''}" data-act="bn" data-v="${k}" style="background:${g}" aria-label="${t}" title="${t}"></button>`).join('')}</div>
+      <div class="composer"><input class="field url" id="bn-url" value="${bnUrl(D.bn) ? esc(D.bn) : ''}" maxlength="280" inputmode="url" autocapitalize="off" autocomplete="off" placeholder="Или ссылка на свою картинку: https://…"></div>
+      <p class="hint" id="bn-hint">Вставь прямую ссылку на изображение (jpg, png, webp), лучше широкое, примерно 3:1. Сверху и снизу баннер слегка затемняется.</p>
+      <h2>Описание</h2>
+      <div class="composer"><input class="field" id="bio-text" value="${esc(D.bio)}" maxlength="120" placeholder="Пару слов о себе"></div>
+      <p class="hint">До 120 символов — видно в профиле и в лидерборде эвента.</p>
       <h2>Аватарка</h2>
       <p class="sub">Выбери аватарку для панели — она появится в шапке и в профиле.</p>
       <div class="av-pick" id="av-pick" ${D.av ? 'hidden' : ''}>
@@ -1426,20 +1488,20 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
   }
 
   const medalHTML = (i) => `<span class="rank-gem rank-${Math.min(i + 1, 3)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5"/></svg>${i + 1}</span>`;
-  const rowObj = (a) => ({ n: a[0], un: a[1], th: a[2], fl: a[3], v: a[4], g: a[5], role: a[6], glow: a[7], gs: a[8], av: a[9], px: a[10] });
+  const rowObj = (a) => ({ n: a[0], un: a[1], th: a[2], fl: a[3], v: a[4], g: a[5], role: a[6], glow: a[7], gs: a[8], av: a[9], px: a[10], bn: a[11] || '', bio: a[12] || '' });
   const vrfBadges = (u) => (u.v === 2 ? VERIFIED_DEV : u.v === 1 ? VERIFIED_STAR : '') + (u.g ? GRINCH_VRF : '');
   const safeGlow = (g) => (GL.some((x) => x[0] && x[0] === g) ? g : '');
   const safePx = (p) => (['rainbow', 'red', 'dark', 'shine'].includes(p) ? p : 'shine');
   const initial = (n) => esc((n || '?').trim().charAt(0).toUpperCase());
   const avInner = (u) => (AVATARS[u.av] ? `<img src="${AVATARS[u.av]}" alt="">` : initial(u.n));
-  const myRow = () => [S.n, S.u || '', Number(S.sn || 0), snow, S.r === 'owner' ? 2 : isVerified ? 1 : 0, Number(S.gv || 0), S.r, D.glow, D.gs, D.av, S.s.px || 'shine'];
+  const myRow = () => [S.n, S.u || '', Number(S.sn || 0), snow, S.r === 'owner' ? 2 : isVerified ? 1 : 0, Number(S.gv || 0), S.r, D.glow, D.gs, D.av, S.s.px || 'shine', D.bn, D.bio];
 
   function leaderboardHTML() {
     const lb = Array.isArray(S.lb) ? S.lb : [];
     const rk = Number(S.rk || 0);
-    const row = (a, i, rank) => { const u = rowObj(a), g = safeGlow(u.glow); return `<li><button class="lb-row" data-act="lbp" data-i="${i}">
+    const row = (a, i, rank) => { const u = rowObj(a), g = safeGlow(u.glow); return `<li><button class="lb-row${u.bn ? ' has-bn' : ''}" data-act="lbp" data-i="${i}">${rowBannerHTML(u.bn)}
         <span class="lb-rank">${medalHTML(rank)}</span><span class="avatar other lb-av${g ? ' gl-' + g : ''}">${avInner(u)}</span>
-        <span class="grow" style="min-width:0"><span class="lb-name">${esc(u.n)}</span>${vrfBadges(u)}<br><span class="lb-un">${u.un ? '@' + esc(u.un) : 'без юзернейма'}</span></span>
+        <span class="grow" style="min-width:0"><span class="lb-name">${esc(u.n)}</span>${vrfBadges(u)}<br><span class="lb-un">${u.un ? '@' + esc(u.un) : 'без юзернейма'}</span>${u.bio ? `<span class="lb-bio">${esc(u.bio)}</span>` : ''}</span>
         <span class="lb-nums"><span class="lb-c" title="Брошено снежков"><i>${ICON.ball}</i>${u.th}</span><span class="lb-c f" title="Снежинки"><i>${ICON.flake}</i>${Number(u.fl).toLocaleString('ru-RU')}</span></span></button></li>`; };
     if (!lb.length) return '<p class="sub" style="margin-top:0">Пока никого нет: брось снежок первым!</p>';
     const mine = rk > lb.length && Number(S.sn || 0) > 0 ? '<li class="lb-gap">⋯</li>' + row(myRow(), -1, rk - 1) : '';
@@ -1465,7 +1527,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
     if (!evOn) return techHTML();
     const tl = tickLeft(), cl = cdLeft(), wc = Number(S.wc || 0), mine = S.wm;
     const owner = S.r === 'owner' && S.evo !== undefined
-      ? `<div class="ev-owner">Режим владельца · эвент ${S.evo ? '<b>открыт для всех</b>' : '<b>скрыт от пользователей</b>'}.<br><code>/open</code> открыть · <code>/close</code> закрыть (тех. работы) · <code>/unlocktest @юзернейм</code> доступ тестировщику · <code>/locktest</code> снять · <code>/delwish</code> убрать конверт</div>` : '';
+      ? `<div class="ev-owner">Режим владельца · эвент ${S.evo ? '<b>открыт для всех</b>' : '<b>скрыт от пользователей</b>'}.<br><code>/open</code> открыть · <code>/close</code> закрыть (тех. работы) · <code>/unlocktest @юзернейм</code> доступ тестировщику · <code>/locktest</code> снять · <code>/delwish</code> убрать конверт · <code>/delbanner</code> сбросить баннер и описание</div>` : '';
     const accrual = S.ct
       ? `Юзербот подключён: каждые 30 минут <b>+${EV.tick} снежинок</b>. Следующие через <b id="tick-left">${tl > 0 ? mmss(tl) : 'совсем скоро'}</b>.`
       : `Подключи юзербота, и каждые 30 минут будет капать <b>+${EV.tick} снежинок</b>.`;
@@ -1560,8 +1622,8 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
     if (!a) return;
     const u = rowObj(a), g = safeGlow(u.glow), px = safePx(u.px);
     const tint = ['#5b93ff', '#34d27b', '#ffc24b', '#ff8a5b', '#b58bff', '#4fd6d6'][(u.n || '?').charCodeAt(0) % 6];
-    openEv(`<div class="av-stage${g ? ' gl-' + g : ''}"><i class="av-halo"></i>${orbitHTML(u.gs)}<div class="av-core other" style="background:${tint}">${avInner(u)}</div></div>
-      <h3>${esc(u.n)}${vrfBadges(u)}</h3><div class="un">${u.un ? '@' + esc(u.un) : 'без юзернейма'}</div>
+    openEv(bannerHTML(u.bn) + `<div class="av-stage${g ? ' gl-' + g : ''}"><i class="av-halo"></i>${orbitHTML(u.gs)}<div class="av-core other" style="background:${tint}">${avInner(u)}</div></div>
+      <h3>${esc(u.n)}${vrfBadges(u)}</h3><div class="un">${u.un ? '@' + esc(u.un) : 'без юзернейма'}</div>${u.bio ? `<p class="pf-bio">${esc(u.bio)}</p>` : ''}
       <span class="badge pfx"><span class="px px-${px}">${ROLE[u.role] || ROLE.free}</span></span>
       <div class="gr-stats"><span><b>${u.th}</b>брошено снежков</span><span><b>${Number(u.fl).toLocaleString('ru-RU')}</b>снежинок</span></div>`
       + (u.un ? `<button class="cbtn blue wide" data-act="ev-tg" data-u="${esc(u.un)}"><span class="lbl" style="flex:none">Открыть в Telegram</span></button>` : '')
@@ -1618,7 +1680,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
       case 'copy': if (t.dataset.locked) openSheet(); else copy(t.dataset.c); break;
       case 'buy': openBuy(); break;
       case 'refresh': send({ a: 'refresh' }); break;
-      case 'reset': KEYS.forEach((k) => { D[k] = S.s[k]; }); D.glow = D.glow || ''; D.gs = D.gs || ''; D.th = D.th || 'blue'; D.av = D.av || ''; D.av = D.av || ''; applyAppTheme(D.th); hap('light'); renderToggles(); renderProfile(); updateAvStage(); toast('Изменения сброшены'); break;
+      case 'reset': KEYS.forEach((k) => { D[k] = S.s[k]; }); D.glow = D.glow || ''; D.gs = D.gs || ''; D.th = D.th || 'blue'; D.av = D.av || ''; D.bn = D.bn || ''; D.bio = D.bio || ''; applyAppTheme(D.th); hap('light'); renderToggles(); renderProfile(); updateAvStage(); toast('Изменения сброшены'); break;
       case 'save': {
         if (!formatOk()) { toast('Исправь шаблон имени: нужен {time}'); hap('error'); show('settings'); break; }
         send({ a: 'set', s: changed() }, 'Отправляю боту…');
@@ -1632,6 +1694,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
       case 'op-send': runOp(t.dataset.op); break;
       case 'close-bg': if (e.target === t) closeSheet(); break;
       case 'ev-bg': if (e.target === t) closeEv(); break;
+      case 'bn': { D.bn = t.dataset.v; const u = $('#bn-url'); if (u) u.value = ''; hap('select'); updateBanner(); paintSavebar(); break; }
       case 'ev-close': closeEv(); break;
       case 'throw': throwSnowball(); break;
       case 'env': envelopeSheet(Number(t.dataset.n)); break;
@@ -1658,7 +1721,13 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
   });
   document.addEventListener('input', (e) => {
     const t = e.target;
-    if (t.id === 'glow-sym') { D.gs = t.value.slice(0, 8); updateAvStage(); paintSavebar(); }
+    if (t.id === 'bio-text') { D.bio = t.value.replace(/\s+/g, ' ').slice(0, 120); updateBanner(); paintSavebar(); }
+    else if (t.id === 'bn-url') {
+      const v = t.value.trim(), ok = v === '' || !!bnUrl(v), hint = $('#bn-hint');
+      if (hint) hint.style.color = ok ? '' : '#ff9aa8';
+      if (ok) { D.bn = v; updateBanner(); paintSavebar(); }
+    }
+    else if (t.id === 'glow-sym') { D.gs = t.value.slice(0, 8); updateAvStage(); paintSavebar(); }
     else if (t.id === 'clock-fmt') {
       D.cf = t.value;
       $('#nick-preview').textContent = nick();
