@@ -10,37 +10,28 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-/* Панель юзербота — стили. Фирменный приём: яркие «сигнальные» кнопки с тёмным текстом, как цветные кнопки бота. */
+/* Панель юзербота — стили. Тема: ночной синий + liquid glass. */
 :root {
-  --ink: #1c0d00;
-  --bg: #150a10;
-  --surface: #221126;
-  --surface-2: #331736;
-  --line: rgba(255, 122, 26, .18);
-  --text: #ffe9d2;
-  --muted: #c08f9e;
+  --ink: #06101f;
+  --bg: #071326;
+  --surface: rgba(13, 31, 57, .82);
+  --surface-2: rgba(25, 55, 91, .78);
+  --line: rgba(111, 183, 255, .17);
+  --text: #e8f4ff;
+  --muted: #8da9c8;
   --go: #4ade80;
   --stop: #ff4d6d;
-  --link: #ff8c2b;
-  --gold: #ffc24b;
-  --out: #ff8c2b;
+  --link: #69baff;
+  --gold: #a5d8ff;
+  --out: #4b9fe8;
   --font: "Onest", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --tabbar-h: 64px;
   color-scheme: dark;
 }
-/* Хэллоуинская тёмно-оранжевая тема — единственная, светлой нет. */
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; background: var(--bg); color: var(--text); }
-body {
-  background:
-    radial-gradient(900px 500px at 85% -10%, rgba(255, 122, 26, .17), transparent 60%),
-    radial-gradient(700px 460px at -12% 28%, rgba(139, 92, 246, .15), transparent 60%),
-    radial-gradient(640px 640px at 50% 118%, rgba(255, 77, 109, .11), transparent 62%),
-    var(--bg);
-  background-attachment: fixed;
-}
 body {
   font: 400 15px/1.45 var(--font);
   -webkit-font-smoothing: antialiased;
@@ -59,7 +50,7 @@ button { cursor: pointer; border: 0; background: none; padding: 0; }
 .top { display: flex; align-items: center; justify-content: space-between; padding: 14px 0 10px; }
 .brand { display: flex; align-items: baseline; font-weight: 800; font-size: 22px; letter-spacing: -.02em; }
 .brand .dot {
-  width: 11px; height: 11px; border-radius: 50%; background: #ff7a1a;
+  width: 11px; height: 11px; border-radius: 50%; background: #62baff;
   display: inline-block; margin-right: 3px; transform: translateY(1px);
 }
 .brand .dot.live { background: var(--go); animation: pulse 2.4s ease-out infinite; }
@@ -76,22 +67,115 @@ button { cursor: pointer; border: 0; background: none; padding: 0; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .avatar.xl { width: 72px; height: 72px; font-size: 28px; }
 
-/* ---------- свечение профиля и орбита символов ---------- */
-.av-stage { position: relative; width: 136px; height: 136px; flex: none; }
-.av-core { position: absolute; inset: 24px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; font-weight: 800; color: var(--ink); background: var(--link); font-size: 30px; }
+/* ---------- неоновое свечение профиля + символы в liquid glass ---------- */
+.av-stage { --g: 105, 186, 255; position: relative; width: 152px; height: 152px; flex: none; isolation: isolate; }
+.gl-green  { --g: 70, 255, 60; }
+.gl-purple { --g: 176, 75, 255; }
+.gl-red    { --g: 255, 59, 59; }
+.gl-pink   { --g: 255, 92, 214; }
+.gl-white  { --g: 255, 255, 255; }
+.gl-black  { --g: 196, 210, 232; --ga: .42; }
+
+.av-core {
+  position: absolute; inset: 28px; z-index: 2; border-radius: 50%; overflow: hidden; display: grid; place-items: center;
+  font-weight: 800; color: var(--ink); background: var(--link); font-size: 30px;
+}
 .av-core img { width: 100%; height: 100%; object-fit: cover; }
-.orbit { position: absolute; inset: 0; pointer-events: none; animation: av-orbit 16s linear infinite; }
-.orbit b { position: absolute; left: 50%; top: 50%; margin: -15px; width: 30px; height: 30px; display: grid; place-items: center; font-weight: 400; font-size: 24px; line-height: 1; }
-.orbit b span { display: block; animation: av-orbit-rev 16s linear infinite; }
+/* стеклянный блик поверх фото */
+.av-core::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(120% 70% at 28% 6%, rgba(255,255,255,.30), rgba(255,255,255,0) 46%), radial-gradient(90% 60% at 70% 110%, rgba(255,255,255,.10), transparent 60%);
+}
+
+/* мягкое гало */
+.av-halo { position: absolute; inset: -12px; z-index: 0; border-radius: 50%; pointer-events: none; display: none;
+  background: radial-gradient(circle closest-side, rgba(var(--g), 0) 52%, rgba(var(--g), .62) 63%, rgba(var(--g), .24) 80%, rgba(var(--g), 0) 100%);
+  filter: blur(8px); opacity: var(--ga, 1); animation: av-halo 2.6s ease-in-out infinite; }
+/* два слоя «языков пламени» вокруг кольца — вращаются в разные стороны */
+.av-stage[class*="gl-"] .av-halo { display: block; }
+.av-stage[class*="gl-"]::before, .av-stage[class*="gl-"]::after {
+  content: ""; position: absolute; inset: -4px; z-index: 1; border-radius: 50%; pointer-events: none;
+  -webkit-mask: radial-gradient(circle closest-side, transparent 0 58%, #000 61%, #000 69%, transparent 98%);
+          mask: radial-gradient(circle closest-side, transparent 0 58%, #000 61%, #000 69%, transparent 98%);
+}
+.av-stage[class*="gl-"]::before {
+  background: repeating-conic-gradient(from 0deg, rgba(var(--g), 1) 0 2.5deg, rgba(var(--g), .15) 2.5deg 6deg, rgba(var(--g), .8) 6deg 8deg, transparent 8deg 13deg);
+  filter: blur(1.4px) saturate(1.25); opacity: var(--ga, 1); animation: av-spin 11s linear infinite, av-flicker 1.9s ease-in-out infinite;
+}
+.av-stage[class*="gl-"]::after {
+  background: repeating-conic-gradient(from 5deg, rgba(var(--g), .9) 0 2deg, transparent 2deg 9deg, rgba(var(--g), .55) 9deg 10.5deg, transparent 10.5deg 17deg);
+  filter: blur(2.6px); opacity: calc(.85 * var(--ga, 1)); animation: av-spin-rev 17s linear infinite, av-flicker 2.7s ease-in-out infinite reverse;
+}
+/* светящееся кольцо: раскалённая белая кромка → цветной ободок → многослойный ореол */
+.av-stage[class*="gl-"] .av-core {
+  border: 3px solid rgb(var(--g));
+  border-color: color-mix(in srgb, rgb(var(--g)) 48%, #fff);
+  box-shadow:
+    0 0 6px 1px rgba(var(--g), 1),
+    0 0 16px 3px rgba(var(--g), .85),
+    0 0 34px 9px rgba(var(--g), .5),
+    0 0 64px 18px rgba(var(--g), .24),
+    inset 0 0 16px 3px rgba(var(--g), .7),
+    inset 0 0 3px 1px rgba(255, 255, 255, .55);
+  animation: av-pulse 2.6s ease-in-out infinite;
+}
+.gl-black .av-core { box-shadow: 0 0 6px 1px rgba(196,210,232,.8), 0 0 22px 6px rgba(0,0,0,.95), 0 0 56px 16px rgba(0,0,0,.85), inset 0 0 18px 3px rgba(0,0,0,.9), inset 0 0 3px 1px rgba(255,255,255,.5); }
+
+/* маленькая аватарка в шапке */
+.avatar[class*="gl-"] {
+  border: 2px solid rgba(var(--g), 1);
+  box-shadow: 0 0 6px 1px rgba(var(--g), 1), 0 0 16px 3px rgba(var(--g), .7), 0 0 32px 8px rgba(var(--g), .34), inset 0 0 8px 1px rgba(var(--g), .65), inset 0 0 2px 1px rgba(255,255,255,.55);
+  animation: av-pulse-sm 2.6s ease-in-out infinite;
+}
+.avatar.gl-black { box-shadow: 0 0 5px 1px rgba(196,210,232,.8), 0 0 18px 5px rgba(0,0,0,.95), inset 0 0 8px rgba(0,0,0,.9); }
+
+/* символы на орбите — стеклянные пузыри */
+.orbit { position: absolute; inset: 0; z-index: 3; pointer-events: none; animation: av-orbit 18s linear infinite; }
+.orbit b { position: absolute; left: 50%; top: 50%; margin: -19px; width: 38px; height: 38px; font-weight: 400; }
+.orbit b span { display: block; width: 100%; height: 100%; animation: av-orbit-rev 18s linear infinite; }
+.orbit b em {
+  position: relative; display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; font-style: normal;
+  background:
+    radial-gradient(circle at 70% 88%, rgba(var(--g), .42), transparent 56%),
+    linear-gradient(158deg, rgba(255,255,255,.24), rgba(255,255,255,.05) 52%, rgba(255,255,255,.12));
+  box-shadow:
+    inset 0 1.5px 1px rgba(255,255,255,.65),
+    inset 0 -6px 10px rgba(var(--g), .32),
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    0 7px 16px rgba(0,0,0,.45),
+    0 0 18px rgba(var(--g), .36);
+  -webkit-backdrop-filter: blur(7px) saturate(190%) brightness(1.12); backdrop-filter: blur(7px) saturate(190%) brightness(1.12);
+  animation: av-bob 4.4s ease-in-out infinite; animation-delay: var(--d, 0s);
+}
+/* преломляющая кромка стекла */
+.orbit b em::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; padding: 1.2px; pointer-events: none;
+  background: conic-gradient(from 205deg, rgba(255,255,255,.95), rgba(255,255,255,0) 24%, rgba(var(--g), .65) 52%, rgba(255,255,255,0) 74%, rgba(255,255,255,.85));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+/* зеркальный блик */
+.orbit b em::after {
+  content: ""; position: absolute; left: 17%; top: 10%; width: 40%; height: 22%; border-radius: 50%; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.04)); transform: rotate(-30deg); filter: blur(.5px);
+}
+.orbit b i { position: relative; z-index: 1; font-style: normal; font-size: 19px; line-height: 1; color: #fff;
+  text-shadow: 0 0 9px rgba(var(--g), .75); filter: drop-shadow(0 1.5px 2px rgba(0,0,0,.5)); }
 @keyframes av-orbit { to { transform: rotate(360deg); } }
 @keyframes av-orbit-rev { to { transform: rotate(-360deg); } }
-.gl-green .av-core, .avatar.gl-green { border: 2px solid #46ff3c; box-shadow: 0 0 18px 4px rgba(70,255,60,.75), 0 0 52px 15px rgba(70,255,60,.42), inset 0 0 14px rgba(70,255,60,.55); }
-.gl-purple .av-core, .avatar.gl-purple { border: 2px solid #b04bff; box-shadow: 0 0 18px 4px rgba(176,75,255,.78), 0 0 52px 15px rgba(176,75,255,.45), inset 0 0 14px rgba(176,75,255,.55); }
-.gl-red .av-core, .avatar.gl-red { border: 2px solid #ff3b3b; box-shadow: 0 0 18px 4px rgba(255,59,59,.8), 0 0 52px 15px rgba(255,59,59,.45), inset 0 0 14px rgba(255,59,59,.55); }
-.gl-pink .av-core, .avatar.gl-pink { border: 2px solid #ff6bd6; box-shadow: 0 0 18px 4px rgba(255,107,214,.8), 0 0 52px 15px rgba(255,107,214,.45), inset 0 0 14px rgba(255,107,214,.55); }
-.gl-black .av-core, .avatar.gl-black { border: 2px solid rgba(255,255,255,.55); box-shadow: 0 0 18px 5px rgba(0,0,0,.95), 0 0 52px 16px rgba(0,0,0,.85), inset 0 0 16px rgba(0,0,0,.9); }
-.gl-white .av-core, .avatar.gl-white { border: 2px solid #ffffff; box-shadow: 0 0 18px 4px rgba(255,255,255,.85), 0 0 52px 15px rgba(255,255,255,.5), inset 0 0 14px rgba(255,255,255,.6); }
-@media (prefers-reduced-motion: reduce) { .orbit, .orbit b span { animation: none !important; } }
+@keyframes av-spin { to { transform: rotate(360deg); } }
+@keyframes av-spin-rev { to { transform: rotate(-360deg); } }
+@keyframes av-flicker { 0%, 100% { opacity: calc(.95 * var(--ga, 1)); } 30% { opacity: calc(.72 * var(--ga, 1)); } 55% { opacity: var(--ga, 1); } 80% { opacity: calc(.8 * var(--ga, 1)); } }
+@keyframes av-halo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+@keyframes av-bob { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-3px) scale(1.05); } }
+@keyframes av-pulse {
+  0%, 100% { box-shadow: 0 0 6px 1px rgba(var(--g),1), 0 0 16px 3px rgba(var(--g),.85), 0 0 34px 9px rgba(var(--g),.5), 0 0 64px 18px rgba(var(--g),.24), inset 0 0 16px 3px rgba(var(--g),.7), inset 0 0 3px 1px rgba(255,255,255,.55); }
+  50%      { box-shadow: 0 0 8px 2px rgba(var(--g),1), 0 0 22px 5px rgba(var(--g),.95), 0 0 46px 13px rgba(var(--g),.62), 0 0 82px 24px rgba(var(--g),.3), inset 0 0 22px 5px rgba(var(--g),.8), inset 0 0 3px 1px rgba(255,255,255,.7); }
+}
+@keyframes av-pulse-sm {
+  0%, 100% { box-shadow: 0 0 6px 1px rgba(var(--g),1), 0 0 16px 3px rgba(var(--g),.7), 0 0 32px 8px rgba(var(--g),.34), inset 0 0 8px 1px rgba(var(--g),.65), inset 0 0 2px 1px rgba(255,255,255,.55); }
+  50%      { box-shadow: 0 0 8px 2px rgba(var(--g),1), 0 0 22px 5px rgba(var(--g),.85), 0 0 42px 12px rgba(var(--g),.46), inset 0 0 11px 2px rgba(var(--g),.8), inset 0 0 2px 1px rgba(255,255,255,.7); }
+}
 
 /* ---------- темы мини-приложения (неон) ---------- */
 body { filter: var(--appf, none); }
@@ -269,110 +353,36 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
 .sheet .cbtn + .cbtn { margin-top: 8px; }
 @keyframes rise { from { transform: translateY(40px); opacity: 0; } }
 
-/* ---------- хэллоуин: декорации и префиксы ---------- */
-.bg-deco { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-.bg-deco span { position: absolute; opacity: .30; animation: floaty 7s ease-in-out infinite; }
-.d1 { left: 3%; top: 10%; font-size: 46px; }
-.d2 { right: 5%; top: 6%; font-size: 34px; animation-delay: -2s; }
-.d3 { left: 7%; bottom: 16%; font-size: 30px; animation-delay: -4s; }
-.d4 { right: 9%; bottom: 24%; font-size: 36px; animation-delay: -1.2s; }
-.d5 { left: 46%; top: 2.5%; font-size: 28px; animation-delay: -3s; }
-.d6 { right: 32%; bottom: 4%; font-size: 42px; animation-delay: -5s; }
-.d7 { left: 30%; bottom: 7%; font-size: 34px; animation-delay: -6s; }
-@keyframes floaty { 0%, 100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-14px) rotate(6deg); } }
-.brand { background: linear-gradient(90deg, #ff8c2b, #ff5f6d); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.tabbar button[aria-selected="true"] { box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .35); }
-.stat b { background: linear-gradient(90deg, #ffb066, #ff7a1a); -webkit-background-clip: text; background-clip: text; color: transparent; }
-
 /* ---------- стили префикса статуса ---------- */
 .px { font-weight: 800; letter-spacing: .02em; }
 .px-rainbow { background: linear-gradient(90deg, #ff5f6d, #ffc24b, #4ade80, #4fc6ff, #b58bff, #ff5f6d); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: px-rainbow 3s linear infinite; }
 @keyframes px-rainbow { to { background-position: 300% 0; } }
 .px-red { color: #ff3b3b; text-shadow: 0 0 10px rgba(255, 59, 59, .7), 0 0 26px rgba(255, 59, 59, .35); animation: px-glow 1.6s ease-in-out infinite; }
 @keyframes px-glow { 50% { text-shadow: 0 0 18px rgba(255, 59, 59, .95), 0 0 38px rgba(255, 59, 59, .5); } }
-.px-dark { background: linear-gradient(135deg, #241031, #0c0513); color: #ff9448 !important; padding: 2px 10px; border-radius: 9px; box-shadow: inset 0 0 0 1px rgba(255, 148, 72, .45), 0 0 16px rgba(255, 122, 26, .25); text-shadow: 0 0 10px rgba(255, 122, 26, .55); }
-.px-shine { background: linear-gradient(110deg, #ffb35c 30%, #fff6ea 50%, #ffb35c 70%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: px-shine 2.2s linear infinite; }
+.px-dark { background: linear-gradient(135deg, #0c1a2e, #050c18); color: #8fd0ff !important; padding: 2px 10px; border-radius: 9px; box-shadow: inset 0 0 0 1px rgba(120, 190, 255, .45), 0 0 16px rgba(80, 160, 240, .25); text-shadow: 0 0 10px rgba(105, 186, 255, .55); }
+.px-shine { background: linear-gradient(110deg, #7cc4ff 30%, #f2faff 50%, #7cc4ff 70%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: px-shine 2.2s linear infinite; }
 @keyframes px-shine { to { background-position: -220% 0; } }
 
-/* ---------- хэллоуин: премиум-контролы ---------- */
-.cbtn {
-  --bgc: linear-gradient(135deg, #ffb03a, #ff7a1a);
-  --glow: rgba(255, 140, 43, .4);
-  position: relative; overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, .30), rgba(255, 255, 255, 0) 48%),
-    var(--bgc);
-  box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, .4),
-    inset 0 -2px 0 rgba(0, 0, 0, .22),
-    0 4px 14px rgba(0, 0, 0, .4),
-    0 0 18px var(--glow);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, .18);
-}
-.cbtn::after {
-  content: ""; position: absolute; inset: -40%;
-  background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, .28) 50%, transparent 58%);
-  transform: translateX(-130%);
-}
+/* ---------- базовые кнопки (цвета задаёт стеклянный блок ниже) ---------- */
+.cbtn { position: relative; overflow: hidden; }
+.cbtn::after { content: ""; position: absolute; inset: -40%; pointer-events: none; transform: translateX(-130%); }
 .cbtn:hover::after { transform: translateX(130%); transition: transform .7s ease; }
-.cbtn.on  { --bgc: linear-gradient(135deg, #46e58e, #16a85a); --glow: rgba(61, 220, 132, .35); }
-.cbtn.off { --bgc: linear-gradient(135deg, #ff7d8d, #e03550); --glow: rgba(255, 90, 110, .42); }
-.cbtn.blue { --bgc: linear-gradient(135deg, #ffb03a, #ff7a1a); --glow: rgba(255, 140, 43, .45); }
-.cbtn.gold { --bgc: linear-gradient(135deg, #ffd76b, #f09a12); --glow: rgba(255, 199, 75, .5); }
-.cbtn.ghost { background: rgba(255, 255, 255, .05); color: var(--text); box-shadow: inset 0 0 0 1.5px rgba(255, 122, 26, .3), 0 4px 14px rgba(0, 0, 0, .4); }
-.cbtn:active { transform: scale(.96); filter: brightness(1.06); }
 .cbtn .state { box-shadow: 0 1px 3px rgba(0, 0, 0, .3); }
+.hint code, .sub code { border: 1px solid rgba(120, 190, 255, .2); }
 
-.pill { border: 1px solid rgba(255, 122, 26, .16); }
-.pill.sel {
-  background: linear-gradient(135deg, #ffb03a, #ff7a1a); color: var(--ink); font-weight: 800;
-  border-color: transparent;
-  box-shadow: 0 0 14px rgba(255, 140, 43, .45), inset 0 1.5px 0 rgba(255, 255, 255, .35);
-}
-
-.send {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .3), rgba(255, 255, 255, 0) 50%), linear-gradient(135deg, #ffb03a, #ff6a1a);
-  box-shadow: 0 0 16px rgba(255, 122, 26, .5), inset 0 1.5px 0 rgba(255, 255, 255, .4), inset 0 -2px 0 rgba(0, 0, 0, .2);
-}
-
-.field:focus { border-color: #ff8c2b; box-shadow: 0 0 0 3px rgba(255, 140, 43, .18), 0 0 14px rgba(255, 140, 43, .2); }
-.stamp { border: 1px solid rgba(255, 122, 26, .22); box-shadow: 0 2px 10px rgba(0, 0, 0, .25); }
-
-.tabbar {
-  background: rgba(26, 12, 28, .88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 122, 26, .25);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, .55), 0 0 26px rgba(255, 122, 26, .14);
-}
-.tabbar button[aria-selected="true"] {
-  background: linear-gradient(135deg, #3d1c3d, #2a1030); color: #ffb066;
-  box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .4), 0 0 14px rgba(255, 122, 26, .22);
-}
-
-.bubble { border: 1px solid rgba(255, 122, 26, .14); box-shadow: 0 4px 14px rgba(0, 0, 0, .28); }
-.bubble.out { border-color: transparent; box-shadow: 0 4px 18px rgba(255, 122, 26, .28), inset 0 1px 0 rgba(255, 255, 255, .25); }
-
-.row .ico { background: linear-gradient(135deg, #361a3a, #22102a); box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .22), 0 2px 8px rgba(0, 0, 0, .3); }
-.row:active .ico { filter: brightness(1.15); }
-
-.toast { background: #241127; color: var(--text); border: 1px solid rgba(255, 122, 26, .4); box-shadow: 0 8px 26px rgba(0, 0, 0, .55), 0 0 18px rgba(255, 122, 26, .22); }
-.sheet { border: 1px solid rgba(255, 122, 26, .25); border-bottom: 0; box-shadow: 0 -8px 40px rgba(0, 0, 0, .5); }
-.demo-note { border: 1px dashed rgba(255, 122, 26, .35); }
-.hint code, .sub code { border: 1px solid rgba(255, 122, 26, .18); }
-
-/* галочка верификации — оранжевая хэллоуинская */
+/* значок верификации */
 .vrf-sub { display: block; margin-top: 7px; font-size: 11px; line-height: 1.3; color: var(--muted); letter-spacing: .02em; }
 /* значок верификации — кастомный бейдж организации */
 .vrf {
   display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px;
   vertical-align: -5px; margin-left: 6px;
-  filter: drop-shadow(0 0 6px rgba(168, 85, 247, .75));
-  animation: px-glow 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgba(105, 186, 255, .6));
 }
 .vrf img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 /* читаемость префиксов: тёмная подложка и контрастная тень */
 .px-rainbow, .px-shine { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .8)) drop-shadow(0 0 8px rgba(0, 0, 0, .45)); }
-.badge.pfx { background: #1d0e1f; box-shadow: inset 0 0 0 1px rgba(255, 122, 26, .4), 0 0 16px rgba(255, 122, 26, .22); }
+.badge.pfx { background: rgba(8, 20, 38, .9); box-shadow: inset 0 0 0 1px rgba(120, 190, 255, .4), 0 0 16px rgba(80, 160, 240, .22); }
 
 /* ---------- выбор аватарки ---------- */
 .av-pick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 4px; }
@@ -381,45 +391,6 @@ textarea.field { height: 120px; padding: 12px 16px; border-radius: 18px; resize:
 .av-item:active { transform: scale(.94); }
 .av-item.sel { border-color: #69baff; box-shadow: 0 0 16px rgba(105,186,255,.45), inset 0 0 0 2px rgba(105,186,255,.35); }
 .av-none { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 20px; font-weight: 800; }
-/* ---------- хэллоуин: баланс конфеток и рулетка ---------- */
-.candy-card { background: var(--surface); border: 1px solid rgba(255, 122, 26, .28); border-radius: 18px; padding: 16px; margin-top: 10px; box-shadow: 0 6px 20px rgba(0, 0, 0, .35), 0 0 22px rgba(255, 122, 26, .14); }
-.candy-bal { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.candy-bal .name { font-weight: 600; }
-.candy-bal b { font-size: 32px; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; background: linear-gradient(90deg, #ffb066, #ff7a1a); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.wheel { margin: 14px auto 12px; width: 132px; height: 132px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 35% 28%, #3d1c3d, #180b1e 72%); border: 3px dashed rgba(255, 140, 43, .55); box-shadow: 0 0 26px rgba(255, 122, 26, .28), inset 0 0 26px rgba(0, 0, 0, .55); }
-.wheel output { font-size: 42px; font-weight: 800; color: var(--gold); text-shadow: 0 0 18px rgba(255, 194, 75, .65); font-variant-numeric: tabular-nums; }
-.wheel output.tick { animation: candy-tick .09s ease; }
-@keyframes candy-tick { 0% { transform: scale(.78); opacity: .4; } 100% { transform: scale(1); opacity: 1; } }
-
-.candy-sub { text-align: center; margin: 10px 2px 0; font-size: 12.5px; color: var(--muted); }
-.candy-sub b { color: var(--text); font-variant-numeric: tabular-nums; }
-
-/* хэллоуинский переливающийся префикс (магазин эвента) */
-.px-halloween { background: linear-gradient(90deg, #ff7a1a, #b04bff, #3dff9a, #ffb347, #ff4d6d, #ff7a1a); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: px-rainbow 2.4s linear infinite; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .8)) drop-shadow(0 0 8px rgba(176, 75, 255, .35)); }
-.badge.hm.pfx { box-shadow: inset 0 0 0 1.5px rgba(168, 85, 247, .6), 0 0 18px rgba(168, 85, 247, .32); }
-.badge.hm { margin-top: 8px; }
-
-/* лидерборд и магазин */
-.lb { margin: 0; padding: 0; list-style: none; background: var(--surface); border: 1px solid rgba(255, 122, 26, .22); border-radius: 18px; padding: 6px 12px; }
-.lb-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
-.lb-row:first-child { border-top: 0; }
-.lb-row.me { background: rgba(255, 122, 26, .14); border-radius: 12px; padding-left: 8px; padding-right: 8px; margin: 0 -8px; border-top-color: transparent; }
-.lb-row.owner { border-radius: 12px; padding-left: 8px; padding-right: 8px; margin: 0 -8px; border-top-color: transparent;
-  background: rgba(168, 85, 247, .10);
-  box-shadow: inset 0 0 0 1.5px rgba(168, 85, 247, .7), 0 0 18px rgba(168, 85, 247, .35); }
-.lb-owner-note { display: block; margin-top: 2px; font-size: 11px; font-weight: 700; letter-spacing: .02em;
-  color: #c084fc; text-shadow: 0 0 10px rgba(168, 85, 247, .65); }
-.lb-rank { width: 30px; flex: none; text-align: center; font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; color: var(--muted); }
-.lb-name { font-weight: 700; overflow-wrap: anywhere; }
-.lb-un { color: var(--muted); font-size: 12.5px; }
-.lb-c { margin-left: auto; flex: none; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--gold); }
-.shop { margin: 0; padding: 0 12px; list-style: none; background: var(--surface); border: 1px solid rgba(255, 122, 26, .22); border-radius: 18px; }
-.shop .row .ico { font-size: 22px; }
-.shop-buy { flex: none; padding: 9px 13px; border-radius: 12px; font-weight: 800; font-size: 14px; font-variant-numeric: tabular-nums; background: linear-gradient(135deg, #ffd76b, #f09a12); color: var(--ink); }
-.shop-buy:active { transform: scale(.95); }
-.shop-buy.poor { background: var(--surface-2); color: var(--muted); }
-.shop-own { flex: none; font-weight: 800; font-size: 13px; color: var(--go); }
-
 /* логи */
 .lg-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; margin-top: 8px; }
 .lg-msg { overflow-wrap: break-word; }
@@ -455,7 +426,6 @@ body {
     linear-gradient(155deg, #071326 0%, #091a33 52%, #061020 100%) !important;
   background-attachment: fixed;
 }
-.bg-deco { display: none !important; }
 .wrap { z-index: 1; }
 .brand {
   color: #e8f4ff !important; background: none !important;
@@ -476,7 +446,7 @@ body {
 }
 h2 { color: #e8f4ff; letter-spacing: -.025em; }
 .sub, .hint, .desc, .value { color: #91abc9 !important; }
-.bubble, .candy-card, .lb, .shop, .sheet {
+.bubble, .sheet {
   background: rgba(12, 29, 53, .72) !important;
   border: 1px solid rgba(112, 183, 255, .17) !important;
   box-shadow: 0 14px 38px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.055) !important;
@@ -577,30 +547,18 @@ h2 { color: #e8f4ff; letter-spacing: -.025em; }
 .sheet { border-bottom: 0 !important; }
 .stats { background: rgba(112,183,255,.16) !important; }
 .stat { background: rgba(12,29,53,.82) !important; }
-.stat b, .candy-bal b {
+.stat b {
   background: linear-gradient(90deg, #c4e8ff, #63b7f5) !important;
   -webkit-background-clip: text !important; background-clip: text !important; color: transparent !important;
 }
-.candy-card { box-shadow: 0 14px 38px rgba(0,0,0,.24), 0 0 30px rgba(65,145,220,.08), inset 0 1px 0 rgba(255,255,255,.06) !important; }
-.wheel {
-  background: radial-gradient(circle at 35% 28%, #1c4771, #08172d 75%) !important;
-  border: 2px solid rgba(118,193,255,.38) !important;
-  box-shadow: 0 0 28px rgba(70,151,220,.18), inset 0 0 25px rgba(0,0,0,.48) !important;
-}
-.wheel output { color: #c2e8ff !important; text-shadow: 0 0 18px rgba(105,186,255,.42) !important; }
-.shop-buy { background: linear-gradient(135deg,#68b8f2,#347ebc) !important; color: #061326 !important; }
-.shop-buy.poor { background: rgba(145,195,245,.1) !important; color: #90abc9 !important; }
-.lb-row.me { background: rgba(75,151,218,.13) !important; }
-.lb-row.owner { background: rgba(75,151,218,.1) !important; box-shadow: inset 0 0 0 1px rgba(105,186,255,.28) !important; }
-.lb-owner-note { color: #9acfff !important; text-shadow: none !important; }
 .vrf { filter: drop-shadow(0 0 6px rgba(105,186,255,.5)) !important; }
 @media (max-width: 520px) {
   }
 @media (prefers-reduced-motion: no-preference) {
-  .bubble, .candy-card, .stats, .lb, .shop { animation: glass-arrive .45s cubic-bezier(.2,.8,.2,1) both; }
+  .bubble, .stats { animation: glass-arrive .45s cubic-bezier(.2,.8,.2,1) both; }
   @keyframes glass-arrive { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
 }
-\n
+
 /* ===== Reference-matched finishing pass ===== */
 .brand {display:flex!important;align-items:center;gap:7px!important;font-size:22px!important;letter-spacing:-.045em!important;color:#edf7ff!important;}
 .brand .dot {width:9px!important;height:9px!important;margin:0 5px 0 0!important;flex:none;}
@@ -747,22 +705,11 @@ body {padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;}
 .inline-vicon {display:inline-flex;align-items:center;justify-content:center;vertical-align:-.19em;width:1.22em;height:1.22em;color:#83caff;flex:none;}
 .inline-vicon svg {width:100%;height:100%;display:block;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
 .ico svg,.premium-ico svg,.admin-stat-ico svg,.heading-mark svg,.footnote-ico svg,.admin-crown svg {width:22px;height:22px;display:block;}
-.rank-gem {display:inline-flex;align-items:center;justify-content:center;position:relative;width:27px;height:31px;font-size:9px;font-weight:800;color:#dff4ff;}
-.rank-gem svg {position:absolute;inset:0;width:100%;height:100%;fill:rgba(92,177,239,.18);stroke:#8bcfff;stroke-width:1.5;stroke-linejoin:round;}
-.rank-gem {isolation:isolate}.rank-gem svg {z-index:-1}
-.rank-1 svg {stroke:#d8f2ff;fill:rgba(160,218,255,.24);filter:drop-shadow(0 0 5px rgba(130,205,255,.42));}
-.rank-2 svg {stroke:#a9c8e5;fill:rgba(121,164,205,.2);}
-.rank-3 svg {stroke:#d39a73;fill:rgba(180,116,75,.2);}
 .log-level-icon {width:15px;height:15px;margin-right:3px;}
-#wheel-num svg {width:40px;height:40px;}
-.shop-buy .inline-vicon {width:15px;height:15px;}
-.lb-c .inline-vicon {width:15px;height:15px;}
-.candy-bal b .inline-vicon {width:26px;height:26px;}
 
 </style>
 </head>
 <body>
-<div class="bg-deco" aria-hidden="true"><span class="d1"><svg viewBox="0 0 24 24"><path d="M12 2 14 10 22 12 14 14 12 22 10 14 2 12 10 10Z"/></svg></span><span class="d2"><svg viewBox="0 0 24 24"><path d="M12 3 13.5 10.5 21 12 13.5 13.5 12 21 10.5 13.5 3 12 10.5 10.5Z"/></svg></span><span class="d3"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span></div>
 <div class="wrap">
   <header class="top">
     <div class="brand"><span class="dot" id="brand-dot"></span><span>VanBog</span><span class="brand-save">SAVE</span></div>
@@ -782,7 +729,6 @@ body {padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;}
     </section>
     <section class="tab" id="tab-profile"></section>
     <section class="tab" id="tab-logs"></section>
-    <section class="tab" id="tab-event"></section>
     <section class="tab" id="tab-admin"></section>
   </main>
 </div>
@@ -827,22 +773,22 @@ body {padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;}
   }
   const nowSec = Math.floor(Date.now() / 1000);
   const DEMO = {
-    v: 1, t: nowSec, id: 8102570887, n: 'Матвей', u: 'matvej', r: 'owner', pu: null, j: nowSec - 86400 * 41, c: 1, cv: 120, cs: 0, ct: nowSec + 840, hm: 1, hc: 0, rk: 4,
-    lb: [['Артём', 'artem_x', 482, 1], ['Матвей Dev', 'dystrolyzing', 371, 2], ['Лена', 'lena', 240, 0], ['Игорь', '', 96, 0]],
-    sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold', px: 'shine', glow: 'green', gs: '🔥', th: 'blue' },
+    v: 1, t: nowSec, id: 8102570887, n: 'Матвей', u: 'matvej', r: 'owner', pu: null, j: nowSec - 86400 * 41, c: 1, 
+    sup: 'dystrolyzing', s: { sd: 1, se: 0, sm: 0, ck: 1, cf: '{name} | {time}', tz: 5, fm: 'bold', px: 'shine', glow: 'green', gs: '🔥⭐💎💀', th: 'blue' },
     a: { u: 128, p: 23, b: 4, m: 3, c: 41, k: 6 },
     lg: [
       [nowSec - 60, 'ok', 'Панель открыта: @matvej (владелец)'],
       [nowSec - 300, 'info', 'Настройки сохранены: sd=1, ck=1'],
-      [nowSec - 900, 'warn', 'Промокод HW26 почти исчерпан: 9 из 10 активаций'],
+      [nowSec - 900, 'warn', 'Промокод NEW26 почти исчерпан: 9 из 10 активаций'],
       [nowSec - 1500, 'error', 'media: TimeoutError — фото не переслано, попытка 3 из 3'],
     ],
   };
   const decoded = decodeState();
   const S = decoded || DEMO;
   const demo = !decoded;
+  if (S.s && S.s.px === 'halloween') S.s.px = 'shine';  // эвент закончился, цвет недоступен
   const D = { ...S.s };
-  D.px = D.px || 'shine';                       // черновик настроек
+  D.px = S.s.px || 'shine';                       // черновик настроек
   D.glow = D.glow || ''; D.gs = D.gs || ''; D.th = D.th || 'blue'; D.av = D.av || '';
   const KEYS = ['sd', 'se', 'sm', 'ck', 'cf', 'tz', 'fm', 'px', 'glow', 'gs', 'th', 'av'];
 
@@ -909,8 +855,6 @@ body {padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;}
     clock: svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>'),
     info: svg('<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/>'),
     warning: svg('<path d="M12 3 22 20H2L12 3Z"/><path d="M12 9v5M12 17h.01"/>'),
-    coin: svg('<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5c-.7-.8-1.8-1.2-3.2-1.2-1.7 0-2.8.8-2.8 2s1.1 1.8 2.8 2.2 2.8 1 2.8 2.2-1.1 2-2.8 2c-1.4 0-2.5-.4-3.2-1.2M12.3 5.8v12.4"/>'),
-    pumpkin: svg('<path d="M12 6c-4-3-8 1-8 6s3 8 8 7 8-1 8-7-4-9-8-6Z"/><path d="M12 6c-1.8 2.5-1.8 10.5 0 13M8 8c-1.2 2.5-1.2 7.5 0 10M16 8c1.2 2.5 1.2 7.5 0 10M12 6V3h3"/>'),
   };
 
 const AVATARS = {
@@ -1014,7 +958,7 @@ const AVATARS = {
   const FMT = [['off', 'Выкл'], ['auto', 'Авто'], ['bold', 'Жирный'], ['italic', 'Курсив'], ['underline', 'Подчёркнутый'],
     ['strike', 'Зачёркнутый'], ['spoiler', 'Спойлер'], ['mono', 'Моно'], ['quote', 'Цитата']];
   const NICK_PRESETS = ['{name} | {time}', '{name} • {time}', '{time} {name}', '{name} {time}'];
-  const PX = [['rainbow', 'Радужный'], ['red', 'Красный'], ['dark', 'Тёмный'], ['shine', 'Переливающийся'], ['halloween', 'Хэллоуин']];
+  const PX = [['rainbow', 'Радужный'], ['red', 'Красный'], ['dark', 'Тёмный'], ['shine', 'Переливающийся']];
 const GL = [['', 'Выключено'], ['green', 'Зелёный'], ['purple', 'Фиолетовый'], ['red', 'Красный'], ['pink', 'Розовый'], ['black', 'Чёрный'], ['white', 'Белый']];
 const GL_DOT = { green: '#46ff3c', purple: '#b04bff', red: '#ff3b3b', pink: '#ff6bd6', black: '#111318', white: '#ffffff' };
 const THEMES = [['blue', 'Синяя'], ['purple', 'Фиолетовая'], ['green', 'Зелёная'], ['red', 'Красная'], ['pink', 'Розовая'], ['orange', 'Оранжевая'], ['black', 'Чёрная']];
@@ -1031,32 +975,6 @@ const THEMES = [['blue', 'Синяя'], ['purple', 'Фиолетовая'], ['gr
   const AF = { ref: '', days: 30, code: '', uses: 1, pdays: 30, text: '' };
   let openOp = null;
 
-  /* ---------- конфетки: баланс, рулетка (кд 10 мин), лидерборд, магазин ---------- */
-  /* Всё настоящее считает бот и хранит в базе: окно приложения — витрина. Рулетка и покупки уходят боту
-     (sendData), он отвечает в чат и присылает свежую панель. В демо-режиме всё считается локально. */
-  let candies = Number(S.cv || 0);
-  let spinning = false;
-  const SPIN_CD = 600, TICK_AMT = 2;
-  const CANDY_PRIZES = [1, 5, 10, 25];
-  const rollCandy = () => {   // только для демо: на деле приз выбирает бот с теми же шансами
-    const r = Math.random();
-    if (r < .52) return 1;   // 52%
-    if (r < .80) return 5;   // 28%
-    if (r < .93) return 10;  // 13%
-    return 25;               // 7% — маленький шанс
-  };
-  const nowS = () => Math.floor(Date.now() / 1000);
-  const spinLeft = () => Math.max(0, Number(S.cs || 0) - nowS());
-  const tickLeft = () => (S.ct ? Math.max(0, Number(S.ct) - nowS()) : 0);
-  const mmss = (sec) => `${Math.floor(sec / 60)}:${pad(sec % 60)}`;
-  const HM_PREFIX = 'Hallowen Maniac';
-  const SHOP = [
-    { id: 'sub14', ico: ICON.diamond, t: 'Подписка на 14 дней', d: 'Платные функции на две недели', price: 200 },
-    { id: 'sub90', ico: ICON.crown, t: 'Подписка на 90 дней', d: 'Платные функции на три месяца', price: 666 },
-    { id: 'prefix', ico: ICON.ticket, t: `Префикс «${HM_PREFIX}»`, d: 'Дополнительный префикс в профиле', price: 100, flag: 'hm' },
-    { id: 'color', ico: ICON.spark, t: 'Хэллоуинский цвет префикса', d: 'Переливающийся оранжево-фиолетовый цвет статуса. Включается в Настройках', price: 999, flag: 'hc' },
-  ];
-
   /* ---------- разметка ---------- */
   const sig = (name, on) => `<button class="cbtn ${on ? 'on' : 'off'}" data-act="toggle" data-k="${name.k}" aria-pressed="${on}">
       <span class="r1"><span class="ico">${name.ico}</span><span class="state">${on ? 'ВКЛ' : 'ВЫКЛ'}</span></span><span class="lbl">${name.t}</span></button>`;
@@ -1068,7 +986,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
 
   const statusLine = () => {
     const px = S.s.px || 'shine';
-    const role = `<span class="px px-${px}">${ROLE[S.r]}</span>${S.r === 'owner' ? VERIFIED : ''}${S.hm ? ' <span class="px px-halloween" style="font-size:.82em"> ' + HM_PREFIX + '</span>' : ''}`;
+    const role = `<span class="px px-${px}">${ROLE[S.r]}</span>${S.r === 'owner' ? VERIFIED : ''}`;
     if (S.r === 'owner' || S.r === 'admin') return `${role}${devCompany()}: все функции открыты`;
     if (S.r === 'paid') return `${role}${devCompany()} ${S.pu === 0 ? 'действует навсегда' : 'действует до ' + fmtDate(S.pu)}`;
     return `${role}: платные функции закрыты`;
@@ -1121,8 +1039,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
       <h2>Префикс статуса</h2>
       <p class="sub">Твой статус — владелец, администратор или подписка — подсвечивается этим стилем.</p>
       <div class="bubble" style="max-width:100%;align-self:auto;border-radius:16px;text-align:center"><span class="px px-${D.px}">${ROLE[S.r]}</span></div>
-      <div class="chips">${PX.map(([k, t]) => `<button class="pill ${D.px === k ? 'sel' : ''}" data-act="px" data-v="${k}">${t}${k === 'halloween' && !S.hc ? ` <span class="inline-vicon">${ICON.lock}</span>` : ''}</button>`).join('')}</div>
-      ${S.hc ? '' : '<p class="hint">Цвет «Хэллоуин» открывается в магазине во вкладке Event за 999 .</p>'}
+      <div class="chips">${PX.map(([k, t]) => `<button class="pill ${D.px === k ? 'sel' : ''}" data-act="px" data-v="${k}">${t}</button>`).join('')}</div>
 
       <h2>Форматирование сообщений</h2><p class="sub">Бот сам оформит каждое твоё сообщение.</p>
       <div class="thread"><div class="bubble out" id="fmt-preview">${previewBubble()}<span class="time">${fmtTime(nowSec)}</span></div></div>
@@ -1149,13 +1066,17 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
   const isVerified = S.r === 'owner' || Number(S.id) === 8102570887;
   const VERIFIED_SUB = '<div class="vrf-sub">' + (S.r === 'owner' ? 'Аккаунт верифицирован командой «DEV»' : 'Аккаунт верифицирован организацией: КОЧ БРАТАН') + '</div>';
   const glowCls = () => (D.glow ? ' gl-' + D.glow : '');
-  const orbitHTML = () => {
-    const syms = [...String(D.gs || '')].slice(0, 6);
-    if (!syms.length) return '';
-    const step = 360 / syms.length;
-    return `<div class="orbit" aria-hidden="true">${syms.map((ch, i) => `<b style="transform: rotate(${i * step}deg) translateX(63px) rotate(${-i * step}deg)"><span>${esc(ch)}</span></b>`).join('')}</div>`;
+  const graphemes = (str) => {
+    try { if (window.Intl && Intl.Segmenter) return Array.from(new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(str), (x) => x.segment); } catch (e) { /* ок */ }
+    return [...str];
   };
-  const avStageHTML = () => `<div class="av-stage${glowCls()}" id="av-stage">${orbitHTML()}<div class="av-core" id="av-core-xl"></div></div>`;
+  const orbitHTML = () => {
+    const syms = graphemes(String(D.gs || '')).filter((c) => c.trim()).slice(0, 6);
+    if (!syms.length) return '';
+    const step = 360 / syms.length, R = 70;
+    return `<div class="orbit" aria-hidden="true">${syms.map((ch, i) => `<b style="transform: rotate(${i * step}deg) translateX(${R}px) rotate(${-i * step}deg)"><span><em style="--d:${(-i * 0.7).toFixed(1)}s"><i>${esc(ch)}</i></em></span></b>`).join('')}</div>`;
+  };
+  const avStageHTML = () => `<div class="av-stage${glowCls()}" id="av-stage"><i class="av-halo"></i>${orbitHTML()}<div class="av-core" id="av-core-xl"></div></div>`;
   function applyAppTheme(name) {
     const v = THEMES.some((t) => t[0] === name) ? name : 'blue';
     if (v === 'blue') delete document.body.dataset.app; else document.body.dataset.app = v;
@@ -1176,9 +1097,9 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
     const cls = S.r === 'paid' ? 'paid' : S.r === 'free' ? 'free' : 'admin';
     const until = S.r === 'paid' ? (S.pu === 0 ? 'навсегда' : 'до ' + fmtDate(S.pu)) : '';
     const pxc = S.s.px || 'shine';
-    const pfxBadge = ['rainbow', 'red', 'shine', 'halloween'].includes(pxc);
+    const pfxBadge = ['rainbow', 'red', 'shine'].includes(pxc);
     return `<div class="who-big">${avStageHTML()}<div><div class="nm">${esc(S.n)}</div>
-        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls}${pfxBadge ? ' pfx' : ''}"><span class="px px-${pxc}">${S.r === 'owner' ? 'Development Company · ' : ''}${ROLE[S.r]}${until ? ' ' + until : ''}</span>${isVerified ? VERIFIED : ''}</span>${S.hm ? `<br><span class="badge hm pfx"><span class="px px-halloween"> ${HM_PREFIX}</span></span>` : ''}${isVerified ? VERIFIED_SUB : ''}</div></div>
+        <div class="un">${S.u ? '@' + esc(S.u) : 'без юзернейма'}</div><span class="badge ${cls}${pfxBadge ? ' pfx' : ''}"><span class="px px-${pxc}">${S.r === 'owner' ? 'Development Company · ' : ''}${ROLE[S.r]}${until ? ' ' + until : ''}</span>${isVerified ? VERIFIED : ''}</span>${isVerified ? VERIFIED_SUB : ''}</div></div>
       <h2>Аватарка</h2>
       <p class="sub">Выбери аватарку для панели — она появится в шапке и в профиле.</p>
       <div class="av-pick" id="av-pick" ${D.av ? 'hidden' : ''}>
@@ -1189,8 +1110,8 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
       <h2>Свечение профиля</h2>
       <p class="sub">Неон вокруг аватарки — как в профиле Telegram.</p>
       <div class="chips">${GL.map(([k, t]) => `<button class="pill ${D.glow === k ? 'sel' : ''}" data-act="glow" data-v="${k}">${k ? `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${GL_DOT[k]};box-shadow:0 0 8px ${GL_DOT[k]};margin-right:6px;vertical-align:-1px"></span>` : ''}${t}</button>`).join('')}</div>
-      <div class="composer" style="margin-top:12px"><input class="field" id="glow-sym" value="${esc(D.gs)}" maxlength="8" placeholder="Символы вокруг аватарки: 🔥 ⭐ 💀 🎃"></div>
-      <p class="hint">Введи до 6 символов или эмодзи — они будут кружиться вокруг аватарки.</p>
+      <div class="composer" style="margin-top:12px"><input class="field" id="glow-sym" value="${esc(D.gs)}" maxlength="8" placeholder="Символы вокруг аватарки: 🔥 ⭐ 💎 💀"></div>
+      <p class="hint">Введи до 6 символов или эмодзи — они будут кружиться вокруг аватарки в стеклянных пузырях.</p>
       <h2>Тема приложения</h2>
       <p class="sub">Цвет неона всей панели — под твой вкус.</p>
       <div class="chips">${THEMES.map(([k, t]) => `<button class="pill ${D.th === k ? 'sel' : ''}" data-act="apptheme" data-v="${k}">${t}</button>`).join('')}</div>
@@ -1288,66 +1209,13 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
   function renderCommands() { $('#cmd-list').innerHTML = commandsHTML($('#cmd-search').value); }
   function renderProfile() { $('#tab-profile').innerHTML = profileHTML(); paintAvatars(); }
   function renderAdmin() { $('#tab-admin').innerHTML = adminHTML(); }
-  const medal = (i) => `<span class="rank-gem rank-${Math.min(i + 1, 3)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10l-1 7-4 3-4-3-1-7Z"/><path d="M9 13 7 21l5-2 5 2-2-8"/></svg>${i + 1}</span>`;
-  const vrfOf = (v) => (v === 2 ? VERIFIED_DEV : v === 1 ? VERIFIED_STAR : '');
-  function leaderboardHTML() {
-    const lb = Array.isArray(S.lb) ? S.lb : [];
-    const rk = Number(S.rk || 0);
-    const row = (i, [n, u, c, v], me) => `<li class="lb-row ${me ? 'me ' : ''}${v === 2 ? 'owner' : ''}"><span class="lb-rank">${medal(i)}</span>
-      <span class="grow" style="min-width:0"><span class="lb-name">${esc(n)}</span>${vrfOf(v)}${u ? `<br><span class="lb-un">@${esc(u)}</span>` : ''}${v === 2 ? `<span class="lb-owner-note"><span class="inline-vicon">${ICON.spark}</span> Это разработчик JADRO</span>` : ''}</span>
-      <span class="lb-c"><span class="inline-vicon">${ICON.coin}</span> ${Number(c).toLocaleString('ru-RU')}</span></li>`;
-    if (!lb.length) return '<p class="sub" style="margin-top:0">Пока никого нет: крути рулетку и стань первым!</p>';
-    const rows = lb.map((e, i) => row(i, e, i + 1 === rk)).join('');
-    const mine = rk > lb.length && candies > 0
-      ? row(rk - 1, [S.n, S.u || '', candies, S.r === 'owner' ? 2 : Number(S.id) === 8102570887 ? 1 : 0], true) : '';
-    return `<ul class="lb">${rows}${mine ? '<li class="lb-row" style="justify-content:center;color:var(--muted)">⋯</li>' + mine : ''}</ul>`;
-  }
-  function shopHTML() {
-    return `<ul class="shop">${SHOP.map((g) => {
-      const owned = g.flag && S[g.flag];
-      return `<li class="row"><span class="ico">${g.ico}</span><span class="grow"><span class="name">${g.t}</span><br><span class="desc">${g.d}</span></span>
-        ${owned ? `<span class="shop-own"><span class="inline-vicon">${ICON.check}</span> Куплено</span>` : `<button class="shop-buy ${candies >= g.price ? '' : 'poor'}" data-act="shop" data-id="${g.id}"><span class="inline-vicon">${ICON.coin}</span> ${g.price}</button>`}</li>`;
-    }).join('')}</ul>`;
-  }
-  function eventHTML() {
-    const tl = tickLeft();
-    const accrual = S.c > 0
-      ? `Бот подключён: каждые 25 минут <b>+${TICK_AMT} жетона</b>. Следующие через <b id="tick-left">${tl > 0 ? mmss(tl) : 'совсем скоро'}</b>.`
-      : `Подключи бота (Настройки Telegram → Business → Чат-боты), и каждые 25 минут будет капать <b>+${TICK_AMT} жетона</b>.`;
-    return `<div class="thread">
-      <div class="bubble pop"><div class="who">VanBog Save</div>
-        <p><span class="inline-vicon">${ICON.pumpkin}</span> <b>Хэллоуинский эвент</b> уже идёт!</p>
-        <p>Крути рулетку, копи жетоны, попадай в топ и обменивай их в магазине.</p>
-        <span class="time"> ${fmtTime(S.t)}</span></div>
-      <div class="candy-card pop">
-        <div class="candy-bal"><span class="name">Баланс жетонов</span><b id="candy-bal"><span class="inline-vicon">${ICON.coin}</span> ${candies.toLocaleString('ru-RU')}</b></div>
-        <div class="wheel" id="wheel"><output id="wheel-num">${ICON.coin}</output></div>
-        <button class="cbtn gold wide" id="spin-btn" data-act="spin" ${spinning || spinLeft() > 0 ? 'disabled' : ''}><span class="lbl" style="flex:none">${spinLeft() > 0 ? 'Рулетка через ' + mmss(spinLeft()) : 'Крутануть рулетку'}</span></button>
-        <p class="hint" style="text-align:center;margin-top:10px">Выпадает 1, 5, 10 или 25 конфеток. Джекпот — маленький шанс! Кулдаун 10 минут.</p>
-        <p class="candy-sub">${accrual}</p>
-      </div></div>
-      <h2><span class="inline-vicon">${ICON.crown}</span> Лидерборд</h2>
-      ${leaderboardHTML()}
-      <h2><span class="inline-vicon">${ICON.ticket}</span> Магазин</h2>
-      <p class="sub">Трать конфетки на подписку и хэллоуинские префиксы.</p>
-      ${shopHTML()}
-      <button class="cbtn blue wide" style="margin-top:16px" data-act="refresh"><span class="lbl" style="flex:none"><span class="inline-vicon">${ICON.refresh}</span> Обновить баланс и топ</span></button>
-      <p class="hint" style="text-align:center">Окно закроется, бот пришлёт свежую панель.</p>`;
-  }
-  function tickTimers() {
-    const b = $('#spin-btn');
-    if (b && !spinning) { const l = spinLeft(); b.disabled = l > 0; $('.lbl', b).textContent = l > 0 ? `Рулетка через ${mmss(l)}` : ' Крутануть рулетку'; }
-    const t = $('#tick-left');
-    if (t) { const l = tickLeft(); t.textContent = l > 0 ? mmss(l) : 'совсем скоро'; }
-  }
-  function renderEvent() { $('#tab-event').innerHTML = eventHTML(); }
   function renderLogs() { $('#tab-logs').innerHTML = logsHTML(); }
   function renderToggles() { renderHome(); renderSettings(); paintSavebar(); }
 
   /* ---------- вкладки ---------- */
   const TABS = [
     ['home', 'Главная', ICON.home], ['settings', 'Настройки', ICON.sliders], ['cmds', 'Команды', ICON.terminal],
-    ['profile', 'Профиль', ICON.user], ...(isOwner ? [['logs', 'Логи', ICON.logs]] : []), ['event', 'Event', ICON.spark], ...(isAdmin ? [['admin', 'Админ', ICON.shield]] : []),
+    ['profile', 'Профиль', ICON.user], ...(isOwner ? [['logs', 'Логи', ICON.logs]] : []), ...(isAdmin ? [['admin', 'Админ', ICON.shield]] : []),
   ];
   let currentTab = 'home';
   function show(tab) {
@@ -1371,7 +1239,7 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
       case 'preset': D.cf = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
       case 'tz': { const v = Math.max(-12, Math.min(14, Number(D.tz) + Number(t.dataset.d))); D.tz = v; hap('select'); $('#tz-out').textContent = tzLabel(v); $('#nick-preview').textContent = nick(); paintSavebar(); break; }
       case 'fmt': D.fm = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
-      case 'px': if (t.dataset.v === 'halloween' && !S.hc) { toast('Цвет «Хэллоуин» продаётся в магазине Event за 999 жетонов'); hap('warning'); break; } D.px = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
+      case 'px': D.px = t.dataset.v; hap('select'); renderSettings(); paintSavebar(); break;
       case 'avatar': {
         D.av = t.dataset.v;
         hap('select');
@@ -1394,52 +1262,6 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
       case 'feature': if (isPaid) copy(t.dataset.c); else openSheet(); break;
       case 'copy': if (t.dataset.locked) openSheet(); else copy(t.dataset.c); break;
       case 'buy': openBuy(); break;
-      case 'spin': {
-        if (spinning) break;
-        const left = spinLeft();
-        if (left > 0) { toast(`Рулетка перезаряжается: ${mmss(left)}`); hap('warning'); break; }
-        spinning = true;
-        const btn = $('#spin-btn'); if (btn) btn.disabled = true;
-        const out = $('#wheel-num');
-        const final = demo ? rollCandy() : 0;
-        let ticks = 0;
-        const iv = setInterval(() => {
-          if (!out || !out.isConnected) { clearInterval(iv); spinning = false; return; }
-          out.textContent = CANDY_PRIZES[Math.floor(Math.random() * 4)];
-          out.classList.remove('tick'); void out.offsetWidth; out.classList.add('tick');
-          hap('light');
-          if (++ticks < 14) return;
-          clearInterval(iv);
-          spinning = false;
-          out.classList.remove('tick');
-          if (demo) {
-            candies += final; S.cv = candies; S.cs = nowS() + SPIN_CD;
-            renderEvent();
-            if (final >= 10) { hap('success'); toast(`Джекпот! +${final} жетонов`); } else { hap('select'); toast(`+${final} жетонов`); }
-          } else {
-            out.innerHTML = ICON.coin;
-            send({ a: 'spin' }, 'Бот крутит рулетку…');   // приз выбирает и записывает бот
-          }
-        }, 90);
-        break;
-      }
-      case 'shop': {
-        const g = SHOP.find((x) => x.id === t.dataset.id);
-        if (!g) break;
-        if (g.flag && S[g.flag]) { toast('Уже куплено'); break; }
-        if (candies < g.price) { toast(`Не хватает конфеток: нужно ${g.price}, у тебя ${candies}`); hap('error'); break; }
-        ask(`Купить «${g.t}» за ${g.price} жетонов?`, () => {
-          if (demo) {
-            candies -= g.price; S.cv = candies;
-            if (g.flag) S[g.flag] = 1;
-            hap('success'); toast('Куплено (демо)');
-            renderEvent(); renderHome(); renderSettings(); renderProfile();
-            return;
-          }
-          send({ a: 'shop', item: g.id }, 'Оформляю покупку…');
-        });
-        break;
-      }
       case 'refresh': send({ a: 'refresh' }); break;
       case 'reset': KEYS.forEach((k) => { D[k] = S.s[k]; }); D.glow = D.glow || ''; D.gs = D.gs || ''; D.th = D.th || 'blue'; D.av = D.av || ''; D.av = D.av || ''; applyAppTheme(D.th); hap('light'); renderToggles(); renderProfile(); updateAvStage(); toast('Изменения сброшены'); break;
       case 'save': {
@@ -1520,10 +1342,9 @@ const devCompany = () => (S.r === 'owner' ? ' <span class="px px-shine" style="f
     if (!isAdmin) $('#tab-admin').remove();
     if (!isOwner) $('#tab-logs').remove();
     $('#demo-note').hidden = !demo;
-    renderHome(); renderSettings(); renderCommands(); renderProfile(); if (isOwner) renderLogs(); renderEvent(); if (isAdmin) renderAdmin();
+    renderHome(); renderSettings(); renderCommands(); renderProfile(); if (isOwner) renderLogs(); if (isAdmin) renderAdmin();
     applyAppTheme(D.th); updateAvStage();
     paintAvatars(); paintSavebar();
-    setInterval(tickTimers, 1000);
     const saved = store.get('tab');
     show(TABS.some((t) => t[0] === saved) ? saved : 'home');
   }
